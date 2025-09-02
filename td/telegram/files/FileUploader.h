@@ -1,5 +1,5 @@
 //
-// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2024
+// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2025
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -35,8 +35,8 @@ class FileUploader final : public FileLoaderActor {
     Callback(const Callback &) = delete;
     Callback &operator=(const Callback &) = delete;
     virtual void on_hash(string hash) = 0;
-    virtual void on_partial_upload(PartialRemoteFileLocation partial_remote, int64 ready_size) = 0;
-    virtual void on_ok(FileType file_type, PartialRemoteFileLocation partial_remote, int64 size) = 0;
+    virtual void on_partial_upload(PartialRemoteFileLocation partial_remote) = 0;
+    virtual void on_ok(FileType file_type, PartialRemoteFileLocation partial_remote) = 0;
     virtual void on_error(Status status) = 0;
     virtual ~Callback() = default;
   };

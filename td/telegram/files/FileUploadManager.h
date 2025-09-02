@@ -1,5 +1,5 @@
 //
-// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2024
+// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2025
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -30,14 +30,14 @@ class FileUploadManager final : public Actor {
   class Callback {
    public:
     virtual ~Callback();
-    virtual void on_partial_upload(QueryId query_id, PartialRemoteFileLocation partial_remote, int64 ready_size) = 0;
+    virtual void on_partial_upload(QueryId query_id, PartialRemoteFileLocation partial_remote) = 0;
     virtual void on_hash(QueryId query_id, string hash) = 0;
-    virtual void on_upload_ok(QueryId query_id, FileType file_type, PartialRemoteFileLocation remote, int64 size) = 0;
+    virtual void on_upload_ok(QueryId query_id, FileType file_type, PartialRemoteFileLocation remote) = 0;
     virtual void on_upload_full_ok(QueryId query_id, FullRemoteFileLocation remote) = 0;
     virtual void on_error(QueryId query_id, Status status) = 0;
   };
 
-  explicit FileUploadManager(unique_ptr<Callback> callback, ActorShared<> parent);
+  FileUploadManager(unique_ptr<Callback> callback, ActorShared<> parent);
 
   void upload(QueryId query_id, const LocalFileLocation &local_location, const RemoteFileLocation &remote_location,
               int64 expected_size, const FileEncryptionKey &encryption_key, int8 priority, vector<int> bad_parts);
@@ -74,9 +74,9 @@ class FileUploadManager final : public Actor {
 
   void try_stop();
 
-  void on_partial_upload(PartialRemoteFileLocation partial_remote, int64 ready_size);
+  void on_partial_upload(PartialRemoteFileLocation partial_remote);
   void on_hash(string hash);
-  void on_ok_upload(FileType file_type, PartialRemoteFileLocation remote, int64 size);
+  void on_ok_upload(FileType file_type, PartialRemoteFileLocation remote);
   void on_ok_upload_full(FullRemoteFileLocation remote);
   void on_error(Status status);
   void on_error_impl(NodeId node_id, Status status);
@@ -92,11 +92,11 @@ class FileUploadManager final : public Actor {
     void on_hash(string hash) final {
       send_closure(actor_id_, &FileUploadManager::on_hash, std::move(hash));
     }
-    void on_partial_upload(PartialRemoteFileLocation partial_remote, int64 ready_size) final {
-      send_closure(actor_id_, &FileUploadManager::on_partial_upload, std::move(partial_remote), ready_size);
+    void on_partial_upload(PartialRemoteFileLocation partial_remote) final {
+      send_closure(actor_id_, &FileUploadManager::on_partial_upload, std::move(partial_remote));
     }
-    void on_ok(FileType file_type, PartialRemoteFileLocation partial_remote, int64 size) final {
-      send_closure(std::move(actor_id_), &FileUploadManager::on_ok_upload, file_type, std::move(partial_remote), size);
+    void on_ok(FileType file_type, PartialRemoteFileLocation partial_remote) final {
+      send_closure(std::move(actor_id_), &FileUploadManager::on_ok_upload, file_type, std::move(partial_remote));
     }
     void on_error(Status status) final {
       send_closure(std::move(actor_id_), &FileUploadManager::on_error, std::move(status));

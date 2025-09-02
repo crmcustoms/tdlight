@@ -41,7 +41,7 @@ Choose your preferred programming language to see examples of usage and a detail
 <a name="python"></a>
 ## Using TDLib in Python projects
 
-TDLib can be used from Python through the [JSON](https://github.com/tdlib/td#using-json) interface.
+TDLib can be used from Python through the [JSON](https://github.com/tdlight-team/tdlight#using-json) interface.
 
 Convenient Python wrappers already exist for our JSON interface.
 
@@ -60,43 +60,43 @@ You can also check out [example/python/tdjson_example.py](https://github.com/tdl
 <a name="javascript"></a>
 ## Using TDLib in JavaScript projects
 
-TDLib can be compiled to WebAssembly or asm.js and used in a browser from JavaScript. See [tdweb](https://github.com/tdlight-team/tdlight/tree/master/example/web) as a convenient wrapper for TDLib in a browser
+TDLib can be compiled to WebAssembly and used in a browser from JavaScript. See [tdweb](https://github.com/tdlight-team/tdlight/tree/master/example/web) as a convenient wrapper for TDLib in a browser
 and [telegram-react](https://github.com/evgeny-nadymov/telegram-react) as an example of a TDLib-based Telegram client.
 
 See also [Svelte-tdweb-starter](https://github.com/gennadypolakov/svelte-tdweb-starter) - Svelte wrapper for tdweb, and [Telegram-Photoframe](https://github.com/lukefx/telegram-photoframe) - a web application that displays your preferred group or channel as Photoframe.
 
-TDLib can be used from Node.js through the [JSON](https://github.com/tdlib/td#using-json) interface.
+TDLib can be used from Node.js through the [JSON](https://github.com/tdlight-team/tdlight#using-json) interface.
 
 Convenient Node.js wrappers already exist for our JSON interface.
 For example, take a look at [Airgram](https://github.com/airgram/airgram) – modern TDLib framework for TypeScript/JavaScript, or
-at [tdl](https://github.com/Bannerets/tdl), which provides a convenient, fully-asynchronous interface for interaction with TDLib and contains a bunch of examples.
+at [tdl](https://github.com/eilvelia/tdl), which provides a convenient, fully-asynchronous interface for interaction with TDLib and contains a bunch of examples.
 
 You can also see [TdNode](https://github.com/puppy0cam/TdNode), [tglib](https://github.com/nodegin/tglib), [node-tdlib](https://github.com/wfjsw/node-tdlib), [tdlnode](https://github.com/fonbah/tdlnode),
 [Paper Plane](https://github.com/par6n/paper-plane), or [node-tlg](https://github.com/dilongfa/node-tlg) for other examples of TDLib JSON interface integration with Node.js.
 
 See also the source code of [DIBgram](https://github.com/DIBgram/DIBgram) - an unofficial Telegram web application which looks like Telegram Desktop.
 
-TDLib can be used also from NativeScript through the [JSON](https://github.com/tdlib/td#using-json) interface.
+TDLib can be used also from NativeScript through the [JSON](https://github.com/tdlight-team/tdlight#using-json) interface.
 See [nativescript-tglib](https://github.com/arpit2438735/nativescript-tglib) as an example of a NativeScript library for building Telegram clients.
 
 <a name="go"></a>
 ## Using TDLib in Go projects
 
-TDLib can be used from the Go programming language through the [JSON](https://github.com/tdlib/td#using-json) interface and Cgo, and can be linked either statically or dynamically.
+TDLib can be used from the Go programming language through the [JSON](https://github.com/tdlight-team/tdlight#using-json) interface and Cgo, and can be linked either statically or dynamically.
 
 Convenient Go wrappers already exist for our JSON interface.
 For example, take a look at [github.com/zelenin/go-tdlib](https://github.com/zelenin/go-tdlib) or [github.com/Arman92/go-tdlib](https://github.com/Arman92/go-tdlib), which provide a convenient TDLib client, a generator for TDLib API classes and contain many examples.
 
-You can also see [github.com/aliforever/go-tdlib](https://github.com/aliforever/go-tdlib) or [github.com/L11R/go-tdjson](https://github.com/L11R/go-tdjson) for another examples of TDLib JSON interface integration with Go.
+You can also see [github.com/aliforever/go-tdlib](https://github.com/aliforever/go-tdlib) for another examples of TDLib JSON interface integration with Go.
 
 <a name="java"></a>
 ## Using TDLib in Java projects
 
-TDLib can be used from the Java programming language through native [JNI](https://github.com/tdlib/td#using-java) binding.
+TDLib can be used from the Java programming language through native [JNI](https://github.com/tdlight-team/tdlight#using-java) binding.
 
 We provide a generator for JNI bridge methods and Java classes for all TDLib API methods and objects.
 See [example/java](https://github.com/tdlight-team/tdlight/tree/master/example/java) for an example of using TDLib from desktop Java along with detailed building and usage instructions.
-To use TDLib to create Android Java applications, use our [prebuilt library for Android](https://core.telegram.org/tdlib/tdlib.zip).
+See [example/android](https://github.com/tdlight-team/tdlight/tree/master/example/android) for detailed build instructions for Android.
 
 <a name="kotlin"></a>
 ## Using TDLib in Kotlin projects
@@ -110,12 +110,12 @@ See also [td-ktx](https://github.com/tdlibx/td-ktx) - Kotlin coroutines wrapper 
 <a name="csharp"></a>
 ## Using TDLib in C# projects
 
-TDLib provides a native [.NET](https://github.com/tdlib/td#using-dotnet) interface through `C++/CLI` and `C++/CX`.
+TDLib provides a native [.NET](https://github.com/tdlight-team/tdlight#using-dotnet) interface through `C++/CLI` and `C++/CX`.
 See [tdlib-netcore](https://github.com/dantmnf/tdlib-netcore) for a SWIG-like binding with automatically generated classes for TDLib API.
 See [example/uwp](https://github.com/tdlight-team/tdlight/tree/master/example/uwp) for an example of building TDLib SDK for the Universal Windows Platform and an example of its usage from C#.
 See [example/csharp](https://github.com/tdlight-team/tdlight/tree/master/example/csharp) for an example of building TDLib with `C++/CLI` support and an example of TDLib usage from C# on Windows.
 
-If you want to write a cross-platform C# application using .NET Core, see [tdsharp](https://github.com/egramtel/tdsharp). It uses our [JSON](https://github.com/tdlib/td#using-json) interface,
+If you want to write a cross-platform C# application using .NET Core, see [tdsharp](https://github.com/egramtel/tdsharp). It uses our [JSON](https://github.com/tdlight-team/tdlight#using-json) interface,
 provides an asynchronous interface for interaction with TDLib, automatically generated classes for TDLib API and has some examples.
 
 Also, see [Unigram](https://github.com/UnigramDev/Unigram), which is a full-featured client rewritten from scratch in C# using TDLib SDK for Universal Windows Platform in less than 2 months,
@@ -138,7 +138,7 @@ or [MeeGram](https://github.com/qtinsider/meegram2) - a Telegram client for Noki
 <a name="swift"></a>
 ## Using TDLib in Swift projects
 
-TDLib can be used from the Swift programming language through the [JSON](https://github.com/tdlib/td#using-json) interface and can be linked statically or dynamically.
+TDLib can be used from the Swift programming language through the [JSON](https://github.com/tdlight-team/tdlight#using-json) interface and can be linked statically or dynamically.
 
 See [example/ios](https://github.com/tdlight-team/tdlight/tree/master/example/ios) for an example of building TDLib for iOS, watchOS, tvOS, visionOS, and macOS.
 
@@ -151,14 +151,14 @@ See [example/swift](https://github.com/tdlight-team/tdlight/tree/master/example/
 <a name="objective-c"></a>
 ## Using TDLib in Objective-C projects
 
-TDLib can be used from the Objective-C programming language through [JSON](https://github.com/tdlib/td#using-json) interface and can be linked statically or dynamically.
+TDLib can be used from the Objective-C programming language through [JSON](https://github.com/tdlight-team/tdlight#using-json) interface and can be linked statically or dynamically.
 
 See [example/ios](https://github.com/tdlight-team/tdlight/tree/master/example/ios) for an example of building TDLib for iOS, watchOS, tvOS, visionOS, and macOS.
 
 <a name="object-pascal"></a>
 ## Using TDLib in Object Pascal projects with Delphi and Lazarus
 
-TDLib can be used from the Object Pascal programming language through the [JSON](https://github.com/tdlib/td#using-json).
+TDLib can be used from the Object Pascal programming language through the [JSON](https://github.com/tdlight-team/tdlight#using-json).
 
 See [tdlib-delphi](https://github.com/dieletro/tdlib-delphi) for an example of TDLib usage from Delphi.
 
@@ -167,11 +167,11 @@ See [tdlib-lazarus](https://github.com/dieletro/tdlib-lazarus) for an example of
 <a name="dart"></a>
 ## Using TDLib in Dart projects
 
-TDLib can be used from the Dart programming language through the [JSON](https://github.com/tdlib/td#using-json) interface and a Dart Native Extension or Dart FFI.
+TDLib can be used from the Dart programming language through the [JSON](https://github.com/tdlight-team/tdlight#using-json) interface and a Dart Native Extension or Dart FFI.
 
 See [tdlib-dart](https://github.com/ivk1800/tdlib-dart), which provide convenient TDLib client with automatically generated and fully-documented classes for all TDLib API methods and objects.
 
-See also [dart_tdlib](https://github.com/periodicaidan/dart_tdlib), [flutter_libtdjson](https://github.com/up9cloud/flutter_libtdjson), [Dart wrapper for TDLib](https://github.com/tdlib/td/pull/708/commits/237060abd4c205768153180e9f814298d1aa9d49), or [tdlib_bindings](https://github.com/lesnitsky/tdlib_bindings) for an example of a TDLib Dart bindings through FFI.
+See also [dart_tdlib](https://github.com/periodicaidan/dart_tdlib), [flutter_libtdjson](https://github.com/up9cloud/flutter_libtdjson), [Dart wrapper for TDLib](https://github.com/tdlight-team/tdlight/pull/708/commits/237060abd4c205768153180e9f814298d1aa9d49), or [tdlib_bindings](https://github.com/lesnitsky/tdlib_bindings) for an example of a TDLib Dart bindings through FFI.
 
 See [Telegram Client library](https://github.com/azkadev/telegram_client), [project.scarlet](https://github.com/aaugmentum/project.scarlet), [tdlib](https://github.com/i-Naji/tdlib),
 [tdlib-dart](https://github.com/drewpayment/tdlib-dart), [FluGram](https://github.com/triedcatched/tdlib-dart), or [telegram-service](https://github.com/igorder-dev/telegram-service) for examples of using TDLib from Dart.
@@ -181,7 +181,7 @@ See also [telegram-flutter](https://github.com/ivk1800/telegram-flutter) - Teleg
 <a name="rust"></a>
 ## Using TDLib in Rust projects
 
-TDLib can be used from the Rust programming language through the [JSON](https://github.com/tdlib/td#using-json) interface.
+TDLib can be used from the Rust programming language through the [JSON](https://github.com/tdlight-team/tdlight#using-json) interface.
 
 See [rust-tdlib](https://github.com/antonio-antuan/rust-tdlib), or [tdlib](https://github.com/paper-plane-developers/tdlib-rs), which provide convenient TDLib clients with automatically generated and fully-documented classes for all TDLib API methods and objects.
 
@@ -193,7 +193,7 @@ Also, see [Paper Plane](https://github.com/paper-plane-developers/paper-plane) �
 <a name="erlang"></a>
 ## Using TDLib in Erlang projects
 
-TDLib can be used from the Erlang programming language through the [JSON](https://github.com/tdlib/td#using-json) interface.
+TDLib can be used from the Erlang programming language through the [JSON](https://github.com/tdlight-team/tdlight#using-json) interface.
 
 See [erl-tdlib](https://github.com/lattenwald/erl-tdlib) for an example of TDLib Erlang bindings.
 
@@ -214,7 +214,7 @@ See [tdlib-bundle](https://github.com/yaroslavche/tdlib-bundle) – a Symfony bu
 <a name="lua"></a>
 ## Using TDLib in Lua projects
 
-TDLib can be used from the Lua programming language through the [JSON](https://github.com/tdlib/td#using-json) interface.
+TDLib can be used from the Lua programming language through the [JSON](https://github.com/tdlight-team/tdlight#using-json) interface.
 
 See [luajit-tdlib](https://github.com/Rami-Sabbagh/luajit-tdlib), [tdlua](https://github.com/giuseppeM99/tdlua), or
 [luajit-tdlib](https://github.com/Playermet/luajit-tdlib) for examples of TDLib Lua bindings and basic usage examples.
@@ -224,21 +224,21 @@ See also [tdbot](https://github.com/vysheng/tdbot), which makes all TDLib featur
 <a name="d"></a>
 ## Using TDLib in D projects
 
-TDLib can be used from the D programming language through the [JSON](https://github.com/tdlib/td#using-json) interface.
+TDLib can be used from the D programming language through the [JSON](https://github.com/tdlight-team/tdlight#using-json) interface.
 
 See [d-tdlib-service](https://github.com/Lord-Evil/d-tdlib-service) for an example of TDLib D bindings.
 
 <a name="ruby"></a>
 ## Using TDLib in Ruby projects
 
-TDLib can be used from the Ruby programming language through the [JSON](https://github.com/tdlib/td#using-json) interface.
+TDLib can be used from the Ruby programming language through the [JSON](https://github.com/tdlight-team/tdlight#using-json) interface.
 
 See [tdlib-ruby](https://github.com/southbridgeio/tdlib-ruby) for examples of Ruby bindings and a client for TDLib.
 
 <a name="Crystal"></a>
 ## Using TDLib in Crystal projects
 
-TDLib can be used from the Crystal programming language through the [JSON](https://github.com/tdlib/td#using-json) interface.
+TDLib can be used from the Crystal programming language through the [JSON](https://github.com/tdlight-team/tdlight#using-json) interface.
 
 See [Proton](https://github.com/protoncr/proton) for examples of Crystal bindings with automatically generated types for all TDLib API methods and objects.
 
@@ -255,12 +255,12 @@ This library contains automatically generated Haskell types for all TDLib API me
 
 TDLib can be used from the Nim programming language.
 
-See [telenim](https://github.com/Yardanico/telenim) for example of such usage and a Nim wrapper for TDLib.
+See [telenim](https://github.com/Ethosa/telenim) for example of such usage and a Nim wrapper for TDLib.
 
 <a name="clojure"></a>
 ## Using TDLib in Clojure projects
 
-TDLib can be used from the Clojure programming language through the [JSON](https://github.com/tdlib/td#using-json) interface.
+TDLib can be used from the Clojure programming language through the [JSON](https://github.com/tdlight-team/tdlight#using-json) interface.
 
 See [clojure-tdlib-json-wrapper](https://github.com/MityaSaray/clojure-tdlib-json) for an example of TDLib Clojure bindings.
 
@@ -296,7 +296,7 @@ See [TDLib bindings for 1С:Enterprise](https://github.com/Infactum/telegram-nat
 <a name="c"></a>
 ## Using TDLib in C projects
 
-TDLib can be used from the C programming language through the [JSON](https://github.com/tdlib/td#using-json) interface and can be linked statically or dynamically.
+TDLib can be used from the C programming language through the [JSON](https://github.com/tdlight-team/tdlight#using-json) interface and can be linked statically or dynamically.
 
 See [easy-tg](https://github.com/Trumeet/easy-tg) for an example of such usage.
 
@@ -313,9 +313,9 @@ See [TDLib bindings for LabVIEW](https://github.com/IvanLisRus/Telegram-Client_T
 ## Using TDLib from other programming languages
 
 You can use TDLib from any other programming language using [tdbot](https://github.com/vysheng/tdbot) or [TDLib JSON CLI](https://github.com/oott123/tdlib-json-cli),
-which provide a command line tool for interaction with TDLIb using the [JSON](https://github.com/tdlib/td#using-json) interface through stdin and stdout.
+which provide a command line tool for interaction with TDLIb using the [JSON](https://github.com/tdlight-team/tdlight#using-json) interface through stdin and stdout.
 You can use this method to use TDLib, for example, from Brainfuck (unfortunately, we haven't seen examples of sending a Telegram message through TDLib on Brainfuck yet).
 
-Alternatively, you can use the TDLib [JSON](https://github.com/tdlib/td#using-json) interface directly from your programming language.
+Alternatively, you can use the TDLib [JSON](https://github.com/tdlight-team/tdlight#using-json) interface directly from your programming language.
 
 Feel free to create an issue, if you have created a valuable TDLib binding or a TDLib client in some programming language and want it to be added to this list of examples.

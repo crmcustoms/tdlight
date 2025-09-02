@@ -1,5 +1,5 @@
 //
-// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2024
+// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2025
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -122,6 +122,12 @@ void FileDownloadManager::hangup() {
     node.downloader_.reset();
     node.from_bytes_.reset();
   });
+  for (auto &it : download_resource_manager_map_) {
+    it.second.reset();
+  }
+  for (auto &it : download_small_resource_manager_map_) {
+    it.second.reset();
+  }
   stop_flag_ = true;
   try_stop();
 }
@@ -137,14 +143,14 @@ void FileDownloadManager::on_start_download() {
   }
 }
 
-void FileDownloadManager::on_partial_download(PartialLocalFileLocation partial_local, int64 ready_size, int64 size) {
+void FileDownloadManager::on_partial_download(PartialLocalFileLocation partial_local, int64 size) {
   auto node_id = get_link_token();
   auto node = nodes_container_.get(node_id);
   if (node == nullptr) {
     return;
   }
   if (!stop_flag_) {
-    callback_->on_partial_download(node->query_id_, std::move(partial_local), ready_size, size);
+    callback_->on_partial_download(node->query_id_, std::move(partial_local), size);
   }
 }
 

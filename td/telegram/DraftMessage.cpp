@@ -1,5 +1,5 @@
 //
-// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2024
+// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2025
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -13,6 +13,7 @@
 #include "td/telegram/MessageEntity.h"
 #include "td/telegram/MessageSelfDestructType.h"
 #include "td/telegram/MessagesManager.h"
+#include "td/telegram/SuggestedPost.h"
 #include "td/telegram/Td.h"
 #include "td/telegram/telegram_api.h"
 #include "td/telegram/UpdatesManager.h"
@@ -31,13 +32,14 @@ class SaveDraftMessageQuery final : public Td::ResultHandler {
   explicit SaveDraftMessageQuery(Promise<Unit> &&promise) : promise_(std::move(promise)) {
   }
 
-  void send(DialogId dialog_id, const unique_ptr<DraftMessage> &draft_message) {
+  void send(DialogId dialog_id, SavedMessagesTopicId saved_messages_topic_id,
+            const unique_ptr<DraftMessage> &draft_message) {
     dialog_id_ = dialog_id;
 
     auto input_peer = td_->dialog_manager_->get_input_peer(dialog_id, AccessRights::Write);
     if (input_peer == nullptr) {
       LOG(INFO) << "Can't update draft message because have no write access to " << dialog_id;
-      return on_error(Status::Error(400, "Can't save draft message"));
+      return on_error(Status::Error(400, "PEER_ID_INVALID"));
     }
 
     int32 flags = 0;
@@ -45,16 +47,20 @@ class SaveDraftMessageQuery final : public Td::ResultHandler {
     vector<telegram_api::object_ptr<telegram_api::MessageEntity>> input_message_entities;
     telegram_api::object_ptr<telegram_api::InputMedia> media;
     int64 message_effect_id = 0;
+    telegram_api::object_ptr<telegram_api::suggestedPost> suggested_post;
+    bool disable_web_page_preview = false;
+    bool invert_media = false;
     if (draft_message != nullptr) {
       CHECK(!draft_message->is_local());
-      input_reply_to = draft_message->message_input_reply_to_.get_input_reply_to(td_, MessageId() /*TODO*/);
+      input_reply_to =
+          draft_message->message_input_reply_to_.get_input_reply_to(td_, MessageId() /*TODO*/, saved_messages_topic_id);
       if (input_reply_to != nullptr) {
         flags |= telegram_api::messages_saveDraft::REPLY_TO_MASK;
       }
       if (draft_message->input_message_text_.disable_web_page_preview) {
-        flags |= telegram_api::messages_saveDraft::NO_WEBPAGE_MASK;
+        disable_web_page_preview = true;
       } else if (draft_message->input_message_text_.show_above_text) {
-        flags |= telegram_api::messages_saveDraft::INVERT_MEDIA_MASK;
+        invert_media = true;
       }
       input_message_entities = get_input_message_entities(
           td_->user_manager_.get(), draft_message->input_message_text_.text.entities, "SaveDraftMessageQuery");
@@ -69,12 +75,16 @@ class SaveDraftMessageQuery final : public Td::ResultHandler {
         flags |= telegram_api::messages_saveDraft::EFFECT_MASK;
         message_effect_id = draft_message->message_effect_id_.get();
       }
+      if (draft_message->suggested_post_ != nullptr) {
+        flags |= telegram_api::messages_saveDraft::SUGGESTED_POST_MASK;
+        suggested_post = draft_message->suggested_post_->get_input_suggested_post();
+      }
     }
     send_query(G()->net_query_creator().create(
         telegram_api::messages_saveDraft(
-            flags, false /*ignored*/, false /*ignored*/, std::move(input_reply_to), std::move(input_peer),
+            flags, disable_web_page_preview, invert_media, std::move(input_reply_to), std::move(input_peer),
             draft_message == nullptr ? string() : draft_message->input_message_text_.text.text,
-            std::move(input_message_entities), std::move(media), message_effect_id),
+            std::move(input_message_entities), std::move(media), message_effect_id, std::move(suggested_post)),
         {{dialog_id}}));
   }
 
@@ -98,7 +108,8 @@ class SaveDraftMessageQuery final : public Td::ResultHandler {
       // with the error "TOPIC_CLOSED", but the draft will be kept locally
       return promise_.set_value(Unit());
     }
-    if (!td_->dialog_manager_->on_get_dialog_error(dialog_id_, status, "SaveDraftMessageQuery")) {
+    if (!td_->dialog_manager_->on_get_dialog_error(dialog_id_, status, "SaveDraftMessageQuery") &&
+        status.message() != "PEER_ID_INVALID") {
       LOG(ERROR) << "Receive error for SaveDraftMessageQuery: " << status;
     }
     promise_.set_error(std::move(status));
@@ -387,7 +398,7 @@ bool DraftMessage::need_update_to(const DraftMessage &other, bool from_update) c
     return !from_update || other.is_local();
   }
   if (message_input_reply_to_ == other.message_input_reply_to_ && input_message_text_ == other.input_message_text_ &&
-      message_effect_id_ == other.message_effect_id_) {
+      message_effect_id_ == other.message_effect_id_ && suggested_post_ == other.suggested_post_) {
     return date_ < other.date_;
   } else {
     return !from_update || date_ <= other.date_;
@@ -406,8 +417,10 @@ td_api::object_ptr<td_api::draftMessage> DraftMessage::get_draft_message_object(
   } else {
     input_message_content = input_message_text_.get_input_message_text_object(td->user_manager_.get());
   }
+  auto suggested_post = suggested_post_ == nullptr ? nullptr : suggested_post_->get_input_suggested_post_info_object();
   return td_api::make_object<td_api::draftMessage>(message_input_reply_to_.get_input_message_reply_to_object(td), date_,
-                                                   std::move(input_message_content), message_effect_id_.get());
+                                                   std::move(input_message_content), message_effect_id_.get(),
+                                                   std::move(suggested_post));
 }
 
 DraftMessage::DraftMessage(Td *td, telegram_api::object_ptr<telegram_api::draftMessage> &&draft_message) {
@@ -435,6 +448,7 @@ DraftMessage::DraftMessage(Td *td, telegram_api::object_ptr<telegram_api::draftM
   input_message_text_ = InputMessageText(std::move(draft_text), std::move(web_page_url), draft_message->no_webpage_,
                                          force_small_media, force_large_media, draft_message->invert_media_, false);
   message_effect_id_ = MessageEffectId(draft_message->effect_);
+  suggested_post_ = SuggestedPost::get_suggested_post(std::move(draft_message->suggested_post_));
 }
 
 Result<unique_ptr<DraftMessage>> DraftMessage::get_draft_message(
@@ -448,6 +462,8 @@ Result<unique_ptr<DraftMessage>> DraftMessage::get_draft_message(
   result->message_input_reply_to_ = td->messages_manager_->create_message_input_reply_to(
       dialog_id, top_thread_message_id, std::move(draft_message->reply_to_), true);
   result->message_effect_id_ = MessageEffectId(draft_message->effect_id_);
+  TRY_RESULT(suggested_post, SuggestedPost::get_suggested_post(td, std::move(draft_message->suggested_post_info_)));
+  result->suggested_post_ = std::move(suggested_post);
 
   auto input_message_content = std::move(draft_message->input_message_text_);
   if (input_message_content != nullptr) {
@@ -546,9 +562,10 @@ unique_ptr<DraftMessage> get_draft_message(Td *td,
   }
 }
 
-void save_draft_message(Td *td, DialogId dialog_id, const unique_ptr<DraftMessage> &draft_message,
-                        Promise<Unit> &&promise) {
-  td->create_handler<SaveDraftMessageQuery>(std::move(promise))->send(dialog_id, draft_message);
+void save_draft_message(Td *td, DialogId dialog_id, SavedMessagesTopicId saved_messages_topic_id,
+                        const unique_ptr<DraftMessage> &draft_message, Promise<Unit> &&promise) {
+  td->create_handler<SaveDraftMessageQuery>(std::move(promise))
+      ->send(dialog_id, saved_messages_topic_id, draft_message);
 }
 
 void load_all_draft_messages(Td *td) {
@@ -557,6 +574,41 @@ void load_all_draft_messages(Td *td) {
 
 void clear_all_draft_messages(Td *td, Promise<Unit> &&promise) {
   td->create_handler<ClearAllDraftsQuery>(std::move(promise))->send();
+}
+
+vector<InputDialogId> get_draft_message_reply_input_dialog_ids(
+    const telegram_api::object_ptr<telegram_api::DraftMessage> &draft_message) {
+  if (draft_message == nullptr || draft_message->get_id() != telegram_api::draftMessage::ID) {
+    return {};
+  }
+  auto *input_reply_to = static_cast<const telegram_api::draftMessage *>(draft_message.get())->reply_to_.get();
+  if (input_reply_to == nullptr) {
+    return {};
+  }
+  switch (input_reply_to->get_id()) {
+    case telegram_api::inputReplyToStory::ID: {
+      auto reply_to = static_cast<const telegram_api::inputReplyToStory *>(input_reply_to);
+      return {InputDialogId(reply_to->peer_)};
+    }
+    case telegram_api::inputReplyToMessage::ID: {
+      auto reply_to = static_cast<const telegram_api::inputReplyToMessage *>(input_reply_to);
+      vector<InputDialogId> result;
+      if (reply_to->reply_to_peer_id_ != nullptr) {
+        result.emplace_back(reply_to->reply_to_peer_id_);
+      }
+      if (reply_to->monoforum_peer_id_ != nullptr) {
+        result.emplace_back(reply_to->monoforum_peer_id_);
+      }
+      return result;
+    }
+    case telegram_api::inputReplyToMonoForum::ID: {
+      auto reply_to = static_cast<const telegram_api::inputReplyToMonoForum *>(input_reply_to);
+      return {InputDialogId(reply_to->monoforum_peer_id_)};
+    }
+    default:
+      UNREACHABLE();
+  }
+  return {};
 }
 
 }  // namespace td

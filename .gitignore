@@ -6,6 +6,7 @@ docs/
 /tdlib/
 .idea/
 vcpkg/
+.clang-tidy
 *.tlo
 
 td.binlog

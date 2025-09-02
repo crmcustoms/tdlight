@@ -1,5 +1,5 @@
 //
-// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2024
+// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2025
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -28,6 +28,7 @@ class InputInvoice {
   struct Invoice {
     string currency_;
     vector<LabeledPricePart> price_parts_;
+    int32 subscription_period_ = 0;
     int64 max_tip_amount_ = 0;
     vector<int64> suggested_tip_amounts_;
     string recurring_payment_terms_of_service_url_;
@@ -83,12 +84,12 @@ class InputInvoice {
   static Result<InputInvoice> process_input_message_invoice(
       td_api::object_ptr<td_api::InputMessageContent> &&input_message_content, Td *td, DialogId owner_dialog_id);
 
-  td_api::object_ptr<td_api::messageInvoice> get_message_invoice_object(Td *td, bool skip_bot_commands,
+  td_api::object_ptr<td_api::messageInvoice> get_message_invoice_object(Td *td, bool is_server, bool skip_bot_commands,
                                                                         int32 max_media_timestamp) const;
 
   tl_object_ptr<telegram_api::inputMediaInvoice> get_input_media_invoice(
-      Td *td, tl_object_ptr<telegram_api::InputFile> input_file,
-      tl_object_ptr<telegram_api::InputFile> input_thumbnail) const;
+      Td *td, telegram_api::object_ptr<telegram_api::InputFile> input_file,
+      telegram_api::object_ptr<telegram_api::InputFile> input_thumbnail) const;
 
   tl_object_ptr<telegram_api::inputBotInlineMessageMediaInvoice> get_input_bot_inline_message_media_invoice(
       tl_object_ptr<telegram_api::ReplyMarkup> &&reply_markup, Td *td) const;
@@ -106,8 +107,6 @@ class InputInvoice {
   const FormattedText *get_caption() const;
 
   int32 get_duration(const Td *td) const;
-
-  FileId get_upload_file_id() const;
 
   FileId get_any_file_id() const;
 

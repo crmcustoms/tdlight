@@ -1,5 +1,5 @@
 //
-// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2024
+// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2025
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -38,7 +38,7 @@ class FileDownloader final : public FileLoaderActor {
     Callback(const Callback &) = delete;
     Callback &operator=(const Callback &) = delete;
     virtual void on_start_download() = 0;
-    virtual void on_partial_download(PartialLocalFileLocation partial_local, int64 ready_size, int64 size) = 0;
+    virtual void on_partial_download(PartialLocalFileLocation partial_local, int64 size) = 0;
     virtual void on_ok(FullLocalFileLocation full_local, int64 size, bool is_new) = 0;
     virtual void on_error(Status status) = 0;
     virtual ~Callback() = default;

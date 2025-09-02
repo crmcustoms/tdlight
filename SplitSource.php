@@ -30,19 +30,11 @@ function split_file($file, $chunks, $undo) {
         $new_files[] = "$file$n.cpp";
     }
 
-    $is_generated = (strpos($file, 'td/generate/') === 0);
-
-    $cmake_file = $is_generated ? 'td/generate/CMakeLists.txt' : 'CMakeLists.txt';
+    $cmake_file = 'CMakeLists.txt';
     $cmake = file_get_contents($cmake_file);
 
     $cmake_cpp_name = $cpp_name;
     $cmake_new_files = $new_files;
-    if ($is_generated) {
-        foreach ($cmake_new_files as &$file_ref) {
-            $file_ref = str_replace('td/generate/auto/td', '${TD_AUTO_INCLUDE_DIR}', $file_ref);
-        }
-        $cmake_cpp_name = str_replace('td/generate/auto/td', '${TD_AUTO_INCLUDE_DIR}', $cmake_cpp_name);
-    }
 
     if ($undo) {
         foreach ($new_files as $file) {
@@ -72,7 +64,7 @@ function split_file($file, $chunks, $undo) {
 
     $lines = file($cpp_name);
     $depth = 0;
-    $target_depth = 1 + $is_generated;
+    $target_depth = 1;
     $is_static = false;
     $in_define = false;
     $in_comment = false;
@@ -171,16 +163,12 @@ function split_file($file, $chunks, $undo) {
                            '(?<name>complete_pending_preauthentication_requests)|'.
                            '(?<name>get_message_history_slice)|'.
                            '(Up|Down)load(?!ManagerCallback)[a-zA-Z]+C(?<name>allback)|(up|down)load_[a-z_]*_c(?<name>allback)_|'.
-                           '(?<name>lazy_to_json)|'.
                            '(?<name>LogEvent)[^sA]|'.
                            '(?<name>parse)[(]|'.
                            '(?<name>store)[(]/', $f, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
                 $name = $match['name'];
                 if ($name === 'parse' || $name === 'store') {
-                    if ($is_generated) {
-                        continue;
-                    }
                     $name = 'LogEvent';
                 }
                 $deps[$name][] = $i;
@@ -296,6 +284,7 @@ function split_file($file, $chunks, $undo) {
         $td_methods = array(
             'AccentColorId' => 'AccentColorId',
             'account_manager[_(-](?![.]get[(][)])|AccountManager[^;>]' => 'AccountManager',
+            'AffiliateType' => 'AffiliateType',
             'alarm_manager[_(-](?![.]get[(][)])|AlarmManager' => 'AlarmManager',
             'animations_manager[_(-](?![.]get[(][)])|AnimationsManager[^;>]' => 'AnimationsManager',
             'attach_menu_manager[_(-](?![.]get[(][)])|AttachMenuManager[^;>]' => 'AttachMenuManager',
@@ -307,11 +296,15 @@ function split_file($file, $chunks, $undo) {
             'background_manager[_(-](?![.]get[(][)])|BackgroundManager' => 'BackgroundManager',
             'BackgroundType' => 'BackgroundType',
             'Birthdate' => 'Birthdate',
-            'BotMenuButton|[a-z_]*_menu_button' => 'BotMenuButton',
-            'send_bot_custom_query|answer_bot_custom_query|set_bot_updates_status' => 'BotQueries',
             'boost_manager[_(-](?![.]get[(][)])|BoostManager' => 'BoostManager',
             'bot_info_manager[_(-](?![.]get[(][)])|BotInfoManager' => 'BotInfoManager',
+            'BotMenuButton|[a-z_]*_menu_button' => 'BotMenuButton',
+            'send_bot_custom_query|answer_bot_custom_query|set_bot_updates_status' => 'BotQueries',
+            'bot_recommendation_manager[_(-](?![.]get[(][)])|BotRecommendationManager' => 'BotRecommendationManager',
+            'BotVerification' => 'BotVerification',
+            'BotVerifierSettings' => 'BotVerifierSettings',
             'BusinessAwayMessage' => 'BusinessAwayMessage',
+            'BusinessBotRights' => 'BusinessBotRights',
             'BusinessChatLink' => 'BusinessChatLink',
             'BusinessConnectedBot' => 'BusinessConnectedBot',
             'BusinessConnectionId' => 'BusinessConnectionId',
@@ -332,6 +325,7 @@ function split_file($file, $chunks, $undo) {
             'common_dialog_manager[_(-](?![.]get[(][)])|CommonDialogManager' => 'CommonDialogManager',
             'connection_state_manager[_(-](?![.]get[(][)])|ConnectionStateManager' => 'ConnectionStateManager',
             'country_info_manager[_(-](?![.]get[(][)])|CountryInfoManager' => 'CountryInfoManager',
+            'CurrencyAmount' => 'CurrencyAmount',
             'CustomEmojiId' => 'CustomEmojiId',
             'device_token_manager[_(-](?![.]get[(][)])|DeviceTokenManager' => 'DeviceTokenManager',
             'DialogAction[^M]' => 'DialogAction',
@@ -347,12 +341,12 @@ function split_file($file, $chunks, $undo) {
             'DialogParticipantFilter' => 'DialogParticipantFilter',
             'dialog_participant_manager[_(-](?![.]get[(][)])|DialogParticipantManager' => 'DialogParticipantManager',
             'DialogSource' => 'DialogSource',
+            'DisallowedGiftsSettings' => 'DisallowedGiftsSettings',
             'documents_manager[_(-](?![.]get[(][)])|DocumentsManager' => 'DocumentsManager',
             'download_manager[_(-](?![.]get[(][)])|DownloadManager[^C]' => 'DownloadManager',
             'DownloadManagerCallback' => 'DownloadManagerCallback',
             'EmailVerification' => 'EmailVerification',
             'EmojiGroup' => 'EmojiGroup',
-            'EmojiStatus|[a-z_]*_emoji_status' => 'EmojiStatus',
             'FactCheck' => 'FactCheck',
             'file_reference_manager[_(-](?![.]get[(][)])|FileReferenceManager|file_references[)]' => 'FileReferenceManager',
             'file_manager[_(-](?![.]get[(][)])|FileManager([^ ;.]| [^*])|update_file[)]' => 'files/FileManager',
@@ -361,12 +355,14 @@ function split_file($file, $chunks, $undo) {
             'game_manager[_(-](?![.]get[(][)])|GameManager' => 'GameManager',
             'G[(][)]|Global[^A-Za-z]' => 'Global',
             'GlobalPrivacySettings' => 'GlobalPrivacySettings',
+            'GroupCallJoinParameters' => 'GroupCallJoinParameters',
             'GroupCallId' => 'GroupCallId',
             'group_call_manager[_(-](?![.]get[(][)])|GroupCallManager' => 'GroupCallManager',
             'hashtag_hints[_(-](?![.]get[(][)])|HashtagHints' => 'HashtagHints',
             'inline_message_manager[_(-](?![.]get[(][)])|InlineMessageManager' => 'InlineMessageManager',
             'inline_queries_manager[_(-](?![.]get[(][)])|InlineQueriesManager' => 'InlineQueriesManager',
             'InputBusinessChatLink' => 'InputBusinessChatLink',
+            'InputGroupCall' => 'InputGroupCall',
             'language_pack_manager[_(-]|LanguagePackManager' => 'LanguagePackManager',
             'link_manager[_(-](?![.]get[(][)])|LinkManager' => 'LinkManager',
             'LogeventIdWithGeneration|add_log_event|delete_log_event|get_erase_log_event_promise|parse_time|store_time' => 'logevent/LogEventHelper',
@@ -376,20 +372,23 @@ function split_file($file, $chunks, $undo) {
             'MessageFullId' => 'MessageFullId',
             'MessageId' => 'MessageId',
             'message_import_manager[_(-](?![.]get[(][)])|MessageImportManager' => 'MessageImportManager',
+            'message_query_manager[_(-](?![.]get[(][)])|MessageQueryManager' => 'MessageQueryManager',
             'MessageLinkInfo' => 'MessageLinkInfo',
             'MessageQuote' => 'MessageQuote',
-            'MessageReaction|UnreadMessageReaction|[a-z_]*message[a-z_]*reaction' => 'MessageReaction',
+            'MessageReaction|UnreadMessageReaction|[a-z_]*message[a-z_]*reaction|reload_paid_reaction_privacy|get_chosen_tags' => 'MessageReaction',
             'MessageReactor' => 'MessageReactor',
             'MessageSearchOffset' => 'MessageSearchOffset',
             '[a-z_]*_message_sender' => 'MessageSender',
             'messages_manager[_(-](?![.]get[(][)])|MessagesManager' => 'MessagesManager',
             'MessageThreadInfo' => 'MessageThreadInfo',
+            'MessageTopic' => 'MessageTopic',
             'MessageTtl' => 'MessageTtl',
             'MissingInvitee' => 'MissingInvitee',
             'notification_manager[_(-](?![.]get[(][)])|NotificationManager|notifications[)]' => 'NotificationManager',
             'notification_settings_manager[_(-](?![.]get[(][)])|NotificationSettingsManager' => 'NotificationSettingsManager',
             'online_manager[_(-](?![.]get[(][)])|OnlineManager' => 'OnlineManager',
             'option_manager[_(-](?![.]get[(][)])|OptionManager' => 'OptionManager',
+            'PaidReactionType' => 'PaidReactionType',
             'password_manager[_(-](?![.]get[(][)])|PasswordManager' => 'PasswordManager',
             'people_nearby_manager[_(-](?![.]get[(][)])|PeopleNearbyManager' => 'PeopleNearbyManager',
             'phone_number_manager[_(-](?![.]get[(][)])|PhoneNumberManager' => 'PhoneNumberManager',
@@ -404,6 +403,9 @@ function split_file($file, $chunks, $undo) {
             'ReactionNotificationSettings' => 'ReactionNotificationSettings',
             'ReactionNotificationsFrom' => 'ReactionNotificationsFrom',
             'ReactionType|[a-z_]*_reaction_type' => 'ReactionType',
+            'ReferralProgramInfo' => 'ReferralProgramInfo',
+            'referral_program_manager[_(-](?![.]get[(][)])|ReferralProgramManager' => 'ReferralProgramManager',
+            'ReferralProgramParameters' => 'ReferralProgramParameters',
             'RequestActor|RequestOnceActor' => 'RequestActor',
             'saved_messages_manager[_(-](?![.]get[(][)])|SavedMessagesManager' => 'SavedMessagesManager',
             'ScopeNotificationSettings|[a-z_]*_scope_notification_settings' => 'ScopeNotificationSettings',
@@ -413,6 +415,13 @@ function split_file($file, $chunks, $undo) {
             'SentEmailCode' => 'SentEmailCode',
             'SharedDialog' => 'SharedDialog',
             'sponsored_message_manager[_(-](?![.]get[(][)])|SponsoredMessageManager' => 'SponsoredMessageManager',
+            'StarAmount' => 'StarAmount',
+            'StarGift[^A-Z]' => 'StarGift',
+            'StarGiftAttribute[^I]' => 'StarGiftAttribute',
+            'StarGiftAttributeId' => 'StarGiftAttributeId',
+            'StarGiftId' => 'StarGiftId',
+            'star_gift_manager[_(-](?![.]get[(][)])|StarGiftManager' => 'StarGiftManager',
+            'StarGiftSettings' => 'StarGiftSettings',
             'star_manager[_(-](?![.]get[(][)])|StarManager' => 'StarManager',
             'StarSubscription[^P]' => 'StarSubscription',
             'StarSubscriptionPricing' => 'StarSubscriptionPricing',
@@ -425,7 +434,11 @@ function split_file($file, $chunks, $undo) {
             'StoryListId' => 'StoryListId',
             'story_manager[_(-](?![.]get[(][)])|StoryManager' => 'StoryManager',
             'SuggestedAction|[a-z_]*_suggested_action' => 'SuggestedAction',
+            'suggested_action_manager[_(-](?![.]get[(][)])|SuggestedActionManager' => 'SuggestedActionManager',
+            'SuggestedPost[^A-Z]' => 'SuggestedPost',
+            'SuggestedPostPrice' => 'SuggestedPostPrice',
             'SynchronousRequests' => 'SynchronousRequests',
+            'TargetDialogTypes' => 'TargetDialogTypes',
             'td_api' => 'td_api',
             'td_db[(][)]|TdDb[^A-Za-z]' => 'TdDb',
             'telegram_api' => 'telegram_api',
@@ -433,6 +446,10 @@ function split_file($file, $chunks, $undo) {
             'theme_manager[_(-](?![.]get[(][)])|ThemeManager' => 'ThemeManager',
             'ThemeSettings' => 'ThemeSettings',
             'time_zone_manager[_(-](?![.]get[(][)])|TimeZoneManager' => 'TimeZoneManager',
+            'ToDoCompletion' => 'ToDoCompletion',
+            'ToDoItem' => 'ToDoItem',
+            'ToDoList' => 'ToDoList',
+            'TonAmount' => 'TonAmount',
             'TopDialogCategory|get_top_dialog_category' => 'TopDialogCategory',
             'top_dialog_manager[_(-](?![.]get[(][)])|TopDialogManager' => 'TopDialogManager',
             'translation_manager[_(-](?![.]get[(][)])|TranslationManager' => 'TranslationManager',
@@ -440,9 +457,12 @@ function split_file($file, $chunks, $undo) {
             'updates_manager[_(-](?![.]get[(][)])|UpdatesManager|get_difference[)]|updateSentMessage|dummyUpdate' => 'UpdatesManager',
             'UserId' => 'UserId',
             'user_manager[_(-](?![.]get[(][)])|UserManager([^ ;.]| [^*])' => 'UserManager',
+            'UserStarGift' => 'UserStarGift',
             'video_notes_manager[_(-](?![.]get[(][)])|VideoNotesManager' => 'VideoNotesManager',
             'videos_manager[_(-](?![.]get[(][)])|VideosManager' => 'VideosManager',
             'voice_notes_manager[_(-](?![.]get[(][)])|VoiceNotesManager' => 'VoiceNotesManager',
+            'web_app_manager[_(-](?![.]get[(][)])|WebAppManager' => 'WebAppManager',
+            'WebAppOpenParameters' => 'WebAppOpenParameters',
             'WebPageId(Hash)?' => 'WebPageId',
             'web_pages_manager[_(-](?![.]get[(][)])|WebPagesManager' => 'WebPagesManager');
 
@@ -480,10 +500,7 @@ $files = array('td/telegram/ChatManager' => 10,
                'td/telegram/StickersManager' => 10,
                'td/telegram/StoryManager' => 10,
                'td/telegram/UpdatesManager' => 10,
-               'td/telegram/UserManager' => 10,
-               'td/generate/auto/td/telegram/td_api' => 10,
-               'td/generate/auto/td/telegram/td_api_json' => 10,
-               'td/generate/auto/td/telegram/telegram_api' => 10);
+               'td/telegram/UserManager' => 10);
 
 foreach ($files as $file => $chunks) {
     split_file($file, $chunks, $undo);

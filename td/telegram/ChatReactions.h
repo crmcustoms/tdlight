@@ -1,5 +1,5 @@
 //
-// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2024
+// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2025
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -44,6 +44,8 @@ struct ChatReactions {
 
   ChatReactions get_active_reactions(
       const FlatHashMap<ReactionType, size_t, ReactionTypeHash> &active_reaction_pos) const;
+
+  void fix_broadcast_reactions(const vector<ReactionType> &active_reaction_types);
 
   bool is_allowed_reaction_type(const ReactionType &reaction) const;
 

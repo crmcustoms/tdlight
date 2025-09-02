@@ -131,7 +131,7 @@ class DoxygenTlDocumentationGenerator extends TlDocumentationGenerator
             strpos($line, 'JNIEnv') || strpos($line, 'jfieldID') || $tline === 'virtual ~Object() {' ||
             $tline === 'virtual void store(TlStorerToString &s, const char *field_name) const = 0;' ||
             $tline === 'virtual void store(TlStorerToJsonString &s, const char *field_name) const = 0;' ||
-            $tline === 'const char *&get_package_name_ref();';
+            $tline === 'const char *&get_package_name_ref();' || $tline === 'const char *get_git_commit_hash();';
     }
 
     protected function isHeaderLine($line)

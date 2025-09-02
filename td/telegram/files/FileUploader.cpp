@@ -1,5 +1,5 @@
 //
-// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2024
+// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2025
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -310,12 +310,11 @@ void FileUploader::on_progress() {
   auto part_count = parts_manager_.get_part_count();
   auto part_size = static_cast<int32>(parts_manager_.get_part_size());
   auto ready_part_count = parts_manager_.get_ready_prefix_count();
-  callback_->on_partial_upload(PartialRemoteFileLocation{file_id_, part_count, part_size, ready_part_count, big_flag_},
-                               parts_manager_.get_ready_size());
+  callback_->on_partial_upload(PartialRemoteFileLocation{file_id_, part_count, part_size, ready_part_count, big_flag_,
+                                                         parts_manager_.get_ready_size()});
   if (parts_manager_.ready()) {
-    callback_->on_ok(file_type_,
-                     PartialRemoteFileLocation{file_id_, part_count, part_size, ready_part_count, big_flag_},
-                     local_size_);
+    callback_->on_ok(file_type_, PartialRemoteFileLocation{file_id_, part_count, part_size, ready_part_count, big_flag_,
+                                                           local_size_});
   }
 }
 

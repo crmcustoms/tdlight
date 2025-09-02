@@ -1,5 +1,5 @@
 //
-// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2024
+// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2025
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -88,6 +88,8 @@ class LinkManager final : public Actor {
 
   static td_api::object_ptr<td_api::BackgroundType> get_background_type_object(const string &link, bool is_pattern);
 
+  static bool has_video_chat_invite_hash(Slice link);
+
   static string get_dialog_filter_invite_link_slug(Slice invite_link);
 
   static string get_dialog_filter_invite_link(Slice slug, bool is_internal);
@@ -95,6 +97,10 @@ class LinkManager final : public Actor {
   static string get_dialog_invite_link_hash(Slice invite_link);
 
   static string get_dialog_invite_link(Slice invite_hash, bool is_internal);
+
+  static string get_group_call_invite_link_slug(Slice invite_link);
+
+  static string get_group_call_invite_link(Slice slug, bool is_internal);
 
   static string get_instant_view_link_url(Slice link);
 
@@ -139,8 +145,10 @@ class LinkManager final : public Actor {
   class InternalLinkDialogFolderInvite;
   class InternalLinkDialogFolderSettings;
   class InternalLinkDialogInvite;
+  class InternalLinkDialogReferralProgram;
   class InternalLinkEditProfileSettings;
   class InternalLinkGame;
+  class InternalLinkGroupCall;
   class InternalLinkInstantView;
   class InternalLinkInvoice;
   class InternalLinkLanguage;
@@ -148,6 +156,8 @@ class LinkManager final : public Actor {
   class InternalLinkMainWebApp;
   class InternalLinkMessage;
   class InternalLinkMessageDraft;
+  class InternalLinkMyStars;
+  class InternalLinkMyToncoins;
   class InternalLinkPassportDataRequest;
   class InternalLinkPremiumFeatures;
   class InternalLinkPremiumGift;
@@ -164,9 +174,10 @@ class LinkManager final : public Actor {
   class InternalLinkThemeSettings;
   class InternalLinkUnknownDeepLink;
   class InternalLinkUnsupportedProxy;
+  class InternalLinkUpgradedGift;
   class InternalLinkUserPhoneNumber;
   class InternalLinkUserToken;
-  class InternalLinkVoiceChat;
+  class InternalLinkVideoChat;
   class InternalLinkWebApp;
 
   enum class LinkType : int32 { External, TMe, Tg, Telegraph };
