@@ -10384,6 +10384,8 @@ void StickersManager::memory_stats(vector<string> &output) {
   output.push_back(",");
   output.push_back("\"short_name_to_sticker_set_id_\":"); output.push_back(std::to_string(this->short_name_to_sticker_set_id_.calc_size()));
   output.push_back(",");
+  output.push_back("\"sticker_set_name_load_queries_\":"); output.push_back(std::to_string(this->sticker_set_name_load_queries_.size()));
+  output.push_back(",");
   output.push_back("\"favorite_sticker_ids_\":"); output.push_back(std::to_string(this->favorite_sticker_ids_.size()));
   output.push_back(",");
   output.push_back("\"load_old_featured_sticker_sets_queries_\":"); output.push_back(std::to_string(this->load_old_featured_sticker_sets_queries_.size()));
@@ -10424,6 +10426,8 @@ void StickersManager::memory_stats(vector<string> &output) {
   output.push_back(",");
   output.push_back("\"pending_get_default_topic_icons_queries_\":"); output.push_back(std::to_string(this->pending_get_default_topic_icons_queries_.size()));
   output.push_back(",");
+  output.push_back("\"pending_get_ton_gift_sticker_queries_\":"); output.push_back(std::to_string(this->pending_get_ton_gift_sticker_queries_.size()));
+  output.push_back(",");
   output.push_back("\"pending_get_animated_emoji_click_stickers_\":"); output.push_back(std::to_string(this->pending_get_animated_emoji_click_stickers_.size()));
   output.push_back(",");
   output.push_back("\"pending_on_animated_emoji_message_clicked_\":"); output.push_back(std::to_string(this->pending_on_animated_emoji_message_clicked_.size()));
@@ -10442,9 +10446,9 @@ void StickersManager::memory_stats(vector<string> &output) {
   output.push_back(",");
   output.push_back("\"load_language_codes_queries_\":"); output.push_back(std::to_string(this->load_language_codes_queries_.size()));
   output.push_back(",");
-  output.push_back("\"emoji_suggestions_urls_\":"); output.push_back(std::to_string(this->emoji_suggestions_urls_.size()));
-  output.push_back(",");
   output.push_back("\"premium_gift_messages_\":"); output.push_back(std::to_string(this->premium_gift_messages_.size()));
+  output.push_back(",");
+  output.push_back("\"ton_gift_messages_\":"); output.push_back(std::to_string(this->ton_gift_messages_.size()));
   output.push_back(",");
   output.push_back("\"dice_messages_\":"); output.push_back(std::to_string(this->dice_messages_.size()));
   output.push_back(",");

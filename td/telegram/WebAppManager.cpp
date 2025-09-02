@@ -652,4 +652,10 @@ FileSourceId WebAppManager::get_web_app_file_source_id(UserId user_id, const str
   return source_id;
 }
 
+void WebAppManager::memory_stats(vector<string> &output) {
+  output.push_back("\"web_app_file_source_ids_\":"); output.push_back(std::to_string(this->web_app_file_source_ids_.size()));
+  output.push_back(",");
+  output.push_back("\"opened_web_views_\":"); output.push_back(std::to_string(this->opened_web_views_.size()));
+}
+
 }  // namespace td

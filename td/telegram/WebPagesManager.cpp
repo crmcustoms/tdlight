@@ -2563,7 +2563,9 @@ void WebPagesManager::memory_stats(vector<string> &output) {
   output.push_back(",");
   output.push_back("\"loaded_from_database_web_pages_\":"); output.push_back(std::to_string(this->loaded_from_database_web_pages_.size()));
   output.push_back(",");
-  output.push_back("\"load_web_page_instant_view_queries_\":"); output.push_back(std::to_string(this->load_web_page_instant_view_queries_.size()));
+  output.push_back("\"load_local_web_page_instant_view_queries_\":"); output.push_back(std::to_string(this->load_local_web_page_instant_view_queries_.size()));
+  output.push_back(",");
+  output.push_back("\"load_server_web_page_instant_view_queries_\":"); output.push_back(std::to_string(this->load_server_web_page_instant_view_queries_.size()));
   output.push_back(",");
   output.push_back("\"web_page_messages_\":"); output.push_back(std::to_string(this->web_page_messages_.size()));
   output.push_back(",");

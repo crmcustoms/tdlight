@@ -31,6 +31,8 @@ class BotRecommendationManager final : public Actor {
 
   void open_bot_recommended_bot(UserId bot_user_id, UserId opened_bot_user_id, Promise<Unit> &&promise);
 
+  void memory_stats(vector<string> &output);
+
  private:
   static constexpr int32 BOT_RECOMMENDATIONS_CACHE_TIME = 86400;  // some reasonable limit
 

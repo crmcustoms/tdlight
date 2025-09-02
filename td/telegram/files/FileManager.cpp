@@ -5230,6 +5230,12 @@ void FileManager::tear_down() {
 std::atomic<int64> FileManager::internal_load_id_;
 
 void FileManager::memory_stats(vector<string> &output) {
+  output.push_back("\"pending_user_file_downloads_\":"); output.push_back(std::to_string(this->pending_user_file_downloads_.size()));
+  output.push_back(",");
+  output.push_back("\"file_download_requests_\":"); output.push_back(std::to_string(this->file_download_requests_.size()));
+  output.push_back(",");
+  output.push_back("\"file_upload_requests_\":"); output.push_back(std::to_string(this->file_upload_requests_.size()));
+  output.push_back(",");
   output.push_back("\"file_hash_to_file_id_\":"); output.push_back(std::to_string(this->file_hash_to_file_id_.calc_size()));
 }
 

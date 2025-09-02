@@ -8817,7 +8817,7 @@ void UserManager::memory_stats(vector<string> &output) {
   output.push_back(",");
   output.push_back("\"loaded_from_database_secret_chats_\":"); output.push_back(std::to_string(this->loaded_from_database_secret_chats_.size()));
   output.push_back(",");
-  output.push_back("\"uploaded_profile_photos_\":"); output.push_back(std::to_string(this->uploaded_profile_photos_.size()));
+  output.push_back("\"being_uploaded_profile_photos_\":"); output.push_back(std::to_string(this->being_uploaded_profile_photos_.size()));
   output.push_back(",");
   output.push_back("\"import_contact_tasks_\":"); output.push_back(std::to_string(this->import_contact_tasks_.size()));
   output.push_back(",");
@@ -8833,7 +8833,7 @@ void UserManager::memory_stats(vector<string> &output) {
   output.push_back(",");
   output.push_back("\"all_imported_contacts_\":"); output.push_back(std::to_string(this->all_imported_contacts_.size()));
   output.push_back(",");
-  output.push_back("\"user_full_contact_require_premium_\":"); output.push_back(std::to_string(this->user_full_contact_require_premium_.size()));
+  output.push_back("\"user_full_contact_price_\":"); output.push_back(std::to_string(this->user_full_contact_price_.size()));
   output.push_back(",");
   output.push_back("\"restricted_user_ids_\":"); output.push_back(std::to_string(this->restricted_user_ids_.calc_size()));
   output.push_back(",");

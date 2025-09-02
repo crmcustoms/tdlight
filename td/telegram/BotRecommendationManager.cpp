@@ -365,4 +365,10 @@ void BotRecommendationManager::open_bot_recommended_bot(UserId bot_user_id, User
                telegram_api::make_object<telegram_api::jsonObject>(std::move(data)), std::move(promise));
 }
 
+void BotRecommendationManager::memory_stats(vector<string> &output) {
+  output.push_back("\"bot_recommended_bots_\":"); output.push_back(std::to_string(this->bot_recommended_bots_.size()));
+  output.push_back(",");
+  output.push_back("\"get_bot_recommendations_queries_\":"); output.push_back(std::to_string(this->get_bot_recommendations_queries_.size()));
+}
+
 }  // namespace td

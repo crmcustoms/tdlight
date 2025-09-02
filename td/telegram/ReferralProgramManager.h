@@ -49,6 +49,8 @@ class ReferralProgramManager final : public Actor {
                                        int32 limit,
                                        Promise<td_api::object_ptr<td_api::connectedAffiliatePrograms>> &&promise);
 
+  void memory_stats(vector<string> &output);
+
  private:
   class GetSuggestedStarRefBotsQuery;
   class ConnectStarRefBotQuery;

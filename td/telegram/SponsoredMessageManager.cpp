@@ -914,6 +914,18 @@ void SponsoredMessageManager::report_video_advertisement(
 
 void SponsoredMessageManager::memory_stats(vector<string> &output) {
   output.push_back("\"dialog_sponsored_messages_\":"); output.push_back(std::to_string(this->dialog_sponsored_messages_.size()));
+  output.push_back(",");
+  output.push_back("\"search_sponsored_dialogs_\":"); output.push_back(std::to_string(this->search_sponsored_dialogs_.size()));
+  output.push_back(",");
+  output.push_back("\"local_id_to_search_query_\":"); output.push_back(std::to_string(this->local_id_to_search_query_.size()));
+  output.push_back(",");
+  output.push_back("\"dialog_infos_\":"); output.push_back(std::to_string(this->dialog_infos_.size()));
+  output.push_back(",");
+  output.push_back("\"video_sponsored_ads_\":"); output.push_back(std::to_string(this->video_sponsored_ads_.size()));
+  output.push_back(",");
+  output.push_back("\"local_id_to_message_full_id_\":"); output.push_back(std::to_string(this->local_id_to_message_full_id_.size()));
+  output.push_back(",");
+  output.push_back("\"video_ad_infos_\":"); output.push_back(std::to_string(this->video_ad_infos_.size()));
 }
 
 }  // namespace td

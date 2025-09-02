@@ -6220,6 +6220,8 @@ void StoryManager::memory_stats(vector<string> &output) {
   output.push_back(",");
   output.push_back("\"being_edited_stories_\":"); output.push_back(std::to_string(this->being_edited_stories_.size()));
   output.push_back(",");
+  output.push_back("\"being_edited_business_stories_\":"); output.push_back(std::to_string(this->being_edited_business_stories_.size()));
+  output.push_back(",");
   output.push_back("\"edit_generations_\":"); output.push_back(std::to_string(this->edit_generations_.size()));
   output.push_back(",");
   output.push_back("\"pending_story_views_\":"); output.push_back(std::to_string(this->pending_story_views_.size()));
@@ -6240,7 +6242,7 @@ void StoryManager::memory_stats(vector<string> &output) {
   output.push_back(",");
   output.push_back("\"being_sent_story_random_ids_\":"); output.push_back(std::to_string(this->being_sent_story_random_ids_.size()));
   output.push_back(",");
-  output.push_back("\"being_uploaded_file_ids_\":"); output.push_back(std::to_string(this->being_uploaded_file_ids_.size()));
+  output.push_back("\"being_uploaded_file_upload_ids_\":"); output.push_back(std::to_string(this->being_uploaded_file_upload_ids_.size()));
   output.push_back(",");
   output.push_back("\"update_story_ids_\":"); output.push_back(std::to_string(this->update_story_ids_.size()));
   output.push_back(",");

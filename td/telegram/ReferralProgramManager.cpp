@@ -494,4 +494,7 @@ void ReferralProgramManager::get_connected_referral_programs(
   td_->create_handler<GetConnectedStarRefBotsQuery>(std::move(promise))->send(affiliate_type, offset, limit);
 }
 
+void ReferralProgramManager::memory_stats(vector<string> &output) {
+}
+
 }  // namespace td

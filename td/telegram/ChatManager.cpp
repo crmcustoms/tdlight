@@ -9625,6 +9625,8 @@ void ChatManager::memory_stats(vector<string> &output) {
   output.push_back(",");
   output.push_back("\"linked_channel_ids_\":"); output.push_back(std::to_string(this->linked_channel_ids_.calc_size()));
   output.push_back(",");
+  output.push_back("\"monoforum_channel_ids_\":"); output.push_back(std::to_string(this->monoforum_channel_ids_.calc_size()));
+  output.push_back(",");
   output.push_back("\"restricted_channel_ids_\":"); output.push_back(std::to_string(this->restricted_channel_ids_.calc_size()));
 }
 

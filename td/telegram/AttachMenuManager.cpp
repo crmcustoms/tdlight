@@ -874,10 +874,6 @@ void AttachMenuManager::memory_stats(vector<string> &output) {
   output.push_back("\"attach_menu_bot_file_source_ids_\":"); output.push_back(std::to_string(this->attach_menu_bot_file_source_ids_.size()));
   output.push_back(",");
   output.push_back("\"reload_attach_menu_bots_queries_\":"); output.push_back(std::to_string(this->reload_attach_menu_bots_queries_.size()));
-  output.push_back(",");
-  output.push_back("\"web_app_file_source_ids_\":"); output.push_back(std::to_string(this->web_app_file_source_ids_.size()));
-  output.push_back(",");
-  output.push_back("\"opened_web_views_\":"); output.push_back(std::to_string(this->opened_web_views_.size()));
 }
 
 }  // namespace td

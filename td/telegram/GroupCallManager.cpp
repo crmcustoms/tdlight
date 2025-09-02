@@ -6218,6 +6218,14 @@ void GroupCallManager::memory_stats(vector<string> &output) {
   output.push_back(",");
   output.push_back("\"group_calls_\":"); output.push_back(std::to_string(this->group_calls_.size()));
   output.push_back(",");
+  output.push_back("\"being_created_group_calls_\":"); output.push_back(std::to_string(this->being_created_group_calls_.size()));
+  output.push_back(",");
+  output.push_back("\"group_call_join_payloads_\":"); output.push_back(std::to_string(this->group_call_join_payloads_.size()));
+  output.push_back(",");
+  output.push_back("\"being_joined_call_blocks_\":"); output.push_back(std::to_string(this->being_joined_call_blocks_.size()));
+  output.push_back(",");
+  output.push_back("\"real_input_group_call_ids_\":"); output.push_back(std::to_string(this->real_input_group_call_ids_.size()));
+  output.push_back(",");
   output.push_back("\"group_call_participants_\":"); output.push_back(std::to_string(this->group_call_participants_.size()));
   output.push_back(",");
   output.push_back("\"participant_id_to_group_call_id_\":"); output.push_back(std::to_string(this->participant_id_to_group_call_id_.size()));
@@ -6229,6 +6237,10 @@ void GroupCallManager::memory_stats(vector<string> &output) {
   output.push_back("\"pending_join_requests_\":"); output.push_back(std::to_string(this->pending_join_requests_.size()));
   output.push_back(",");
   output.push_back("\"pending_join_presentation_requests_\":"); output.push_back(std::to_string(this->pending_join_presentation_requests_.size()));
+  output.push_back(",");
+  output.push_back("\"group_call_messages_\":"); output.push_back(std::to_string(this->group_call_messages_.size()));
+  output.push_back(",");
+  output.push_back("\"group_call_message_full_ids_\":"); output.push_back(std::to_string(this->group_call_message_full_ids_.size()));
 }
 
 }  // namespace td

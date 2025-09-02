@@ -86,6 +86,8 @@ class StarGiftManager final : public Actor {
 
   void unregister_gift(MessageFullId message_full_id, const char *source);
 
+  void memory_stats(vector<string> &output);
+
  private:
   void start_up() final;
 

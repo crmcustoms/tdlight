@@ -68,6 +68,8 @@ class WebAppManager final : public Actor {
 
   FileSourceId get_web_app_file_source_id(UserId user_id, const string &short_name);
 
+  void memory_stats(vector<string> &output);
+
  private:
   static const int32 PING_WEB_VIEW_TIMEOUT = 60;
 

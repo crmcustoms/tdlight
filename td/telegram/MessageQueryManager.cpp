@@ -3354,4 +3354,20 @@ void MessageQueryManager::on_binlog_events(vector<BinlogEvent> &&events) {
   }
 }
 
+void MessageQueryManager::memory_stats(vector<string> &output) {
+  output.push_back("\"being_uploaded_covers_\":"); output.push_back(std::to_string(this->being_uploaded_covers_.size()));
+  output.push_back(",");
+  output.push_back("\"being_reloaded_extended_media_message_full_ids_\":"); output.push_back(std::to_string(this->being_reloaded_extended_media_message_full_ids_.size()));
+  output.push_back(",");
+  output.push_back("\"being_reloaded_fact_checks_\":"); output.push_back(std::to_string(this->being_reloaded_fact_checks_.size()));
+  output.push_back(",");
+  output.push_back("\"need_view_counter_increment_message_full_ids_\":"); output.push_back(std::to_string(this->need_view_counter_increment_message_full_ids_.size()));
+  output.push_back(",");
+  output.push_back("\"being_reloaded_views_message_full_ids_\":"); output.push_back(std::to_string(this->being_reloaded_views_message_full_ids_.size()));
+  output.push_back(",");
+  output.push_back("\"being_reloaded_reactions_\":"); output.push_back(std::to_string(this->being_reloaded_reactions_.size()));
+  output.push_back(",");
+  output.push_back("\"pending_read_reactions_\":"); output.push_back(std::to_string(this->pending_read_reactions_.size()));
+}
+
 }  // namespace td

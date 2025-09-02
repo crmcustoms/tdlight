@@ -2593,7 +2593,7 @@ const SavedMessagesManager::TopicDate SavedMessagesManager::MIN_TOPIC_DATE{std::
 const SavedMessagesManager::TopicDate SavedMessagesManager::MAX_TOPIC_DATE{0, SavedMessagesTopicId()};
 
 void SavedMessagesManager::memory_stats(vector<string> &output) {
-  output.push_back("\"saved_messages_topics_\":"); output.push_back(std::to_string(this->saved_messages_topics_.size()));
+  output.push_back("\"monoforum_topic_lists_\":"); output.push_back(std::to_string(this->monoforum_topic_lists_.size()));
 }
 
 }  // namespace td

@@ -241,4 +241,12 @@ void SuggestedActionManager::get_current_state(vector<td_api::object_ptr<td_api:
   }
 }
 
+void SuggestedActionManager::memory_stats(vector<string> &output) {
+  output.push_back("\"suggested_actions_\":"); output.push_back(std::to_string(this->suggested_actions_.size()));
+  output.push_back(",");
+  output.push_back("\"dialog_suggested_actions_\":"); output.push_back(std::to_string(this->dialog_suggested_actions_.size()));
+  output.push_back(",");
+  output.push_back("\"dismiss_suggested_action_queries_\":"); output.push_back(std::to_string(this->dismiss_suggested_action_queries_.size()));
+}
+
 }  // namespace td

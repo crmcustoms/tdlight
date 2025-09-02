@@ -1682,4 +1682,14 @@ void StarGiftManager::on_update_gift_message(MessageFullId message_full_id) {
   update_gift_message_timeout_.add_timeout_in(message_number, timeout);
 }
 
+void StarGiftManager::memory_stats(vector<string> &output) {
+  output.push_back("\"gift_prices_\":"); output.push_back(std::to_string(this->gift_prices_.size()));
+  output.push_back(",");
+  output.push_back("\"gift_message_full_ids_\":"); output.push_back(std::to_string(this->gift_message_full_ids_.calc_size()));
+  output.push_back(",");
+  output.push_back("\"gift_message_full_ids_by_id_\":"); output.push_back(std::to_string(this->gift_message_full_ids_by_id_.calc_size()));
+  output.push_back(",");
+  output.push_back("\"being_reloaded_gift_messages_\":"); output.push_back(std::to_string(this->being_reloaded_gift_messages_.size()));
+}
+
 }  // namespace td

@@ -3717,13 +3717,15 @@ void DialogManager::memory_stats(vector<string> &output) {
   output.push_back(",");
   output.push_back("\"inaccessible_resolved_usernames_\":"); output.push_back(std::to_string(this->inaccessible_resolved_usernames_.calc_size()));
   output.push_back(",");
-  output.push_back("\"reload_voice_chat_on_search_usernames_\":"); output.push_back(std::to_string(this->reload_voice_chat_on_search_usernames_.size()));
+  output.push_back("\"reload_video_chat_on_search_usernames_\":"); output.push_back(std::to_string(this->reload_video_chat_on_search_usernames_.size()));
   output.push_back(",");
   output.push_back("\"resolve_dialog_username_queries_\":"); output.push_back(std::to_string(this->resolve_dialog_username_queries_.size()));
   output.push_back(",");
-  output.push_back("\"dialog_suggested_actions_\":"); output.push_back(std::to_string(this->dialog_suggested_actions_.size()));
+  output.push_back("\"search_public_dialogs_queries_\":"); output.push_back(std::to_string(this->search_public_dialogs_queries_.size()));
   output.push_back(",");
-  output.push_back("\"dismiss_suggested_action_queries_\":"); output.push_back(std::to_string(this->dismiss_suggested_action_queries_.size()));
+  output.push_back("\"found_public_dialogs_\":"); output.push_back(std::to_string(this->found_public_dialogs_.size()));
+  output.push_back(",");
+  output.push_back("\"found_on_server_dialogs_\":"); output.push_back(std::to_string(this->found_on_server_dialogs_.size()));
 }
 
 }  // namespace td

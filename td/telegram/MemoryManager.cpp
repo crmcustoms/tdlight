@@ -76,6 +76,12 @@
 #include "td/telegram/VideoNotesManager.h"
 #include "td/telegram/VideosManager.h"
 #include "td/telegram/WebPagesManager.h"
+#include "td/telegram/BotRecommendationManager.h"
+#include "td/telegram/MessageQueryManager.h"
+#include "td/telegram/ReferralProgramManager.h"
+#include "td/telegram/StarGiftManager.h"
+#include "td/telegram/SuggestedActionManager.h"
+#include "td/telegram/WebAppManager.h"
 
 namespace td {
 
@@ -124,26 +130,6 @@ void MemoryManager::get_current_state(vector<td_api::object_ptr<td_api::Update>>
 void MemoryManager::print_managers_memory_stats(vector<string> &output) const {
   output.push_back("\"file_manager_\":{"); td_->file_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
-  output.push_back("\"business_connection_manager_\":{"); td_->business_connection_manager_->memory_stats(output); output.push_back("}");
-  output.push_back(",");
-  output.push_back("\"channel_recommendation_manager_\":{"); td_->channel_recommendation_manager_->memory_stats(output); output.push_back("}");
-  output.push_back(",");
-  output.push_back("\"chat_manager_\":{"); td_->chat_manager_->memory_stats(output); output.push_back("}");
-  output.push_back(",");
-  output.push_back("\"connection_state_manager_\":{"); td_->connection_state_manager_->memory_stats(output); output.push_back("}");
-  output.push_back(",");
-  output.push_back("\"inline_message_manager_\":{"); td_->inline_message_manager_->memory_stats(output); output.push_back("}");
-  output.push_back(",");
-  output.push_back("\"online_manager_\":{"); td_->online_manager_->memory_stats(output); output.push_back("}");
-  output.push_back(",");
-  output.push_back("\"promo_data_manager_\":{"); td_->promo_data_manager_->memory_stats(output); output.push_back("}");
-  output.push_back(",");
-  output.push_back("\"star_manager_\":{"); td_->star_manager_->memory_stats(output); output.push_back("}");
-  output.push_back(",");
-  output.push_back("\"terms_of_service_manager_\":{"); td_->terms_of_service_manager_->memory_stats(output); output.push_back("}");
-  output.push_back(",");
-  output.push_back("\"user_manager_\":{"); td_->user_manager_->memory_stats(output); output.push_back("}");
-  output.push_back(",");
   output.push_back("\"account_manager_\":{"); td_->account_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"animations_manager_\":{"); td_->animations_manager_->memory_stats(output); output.push_back("}");
@@ -162,11 +148,21 @@ void MemoryManager::print_managers_memory_stats(vector<string> &output) const {
   output.push_back(",");
   output.push_back("\"bot_info_manager_\":{"); td_->bot_info_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
+  output.push_back("\"bot_recommendation_manager_\":{"); td_->bot_recommendation_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
+  output.push_back("\"business_connection_manager_\":{"); td_->business_connection_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
   output.push_back("\"business_manager_\":{"); td_->business_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"callback_queries_manager_\":{"); td_->callback_queries_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
+  output.push_back("\"channel_recommendation_manager_\":{"); td_->channel_recommendation_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
+  output.push_back("\"chat_manager_\":{"); td_->chat_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
   output.push_back("\"common_dialog_manager_\":{"); td_->common_dialog_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
+  output.push_back("\"connection_state_manager_\":{"); td_->connection_state_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"country_info_manager_\":{"); td_->country_info_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
@@ -192,17 +188,23 @@ void MemoryManager::print_managers_memory_stats(vector<string> &output) const {
   output.push_back(",");
   output.push_back("\"group_call_manager_\":{"); td_->group_call_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
+  output.push_back("\"inline_message_manager_\":{"); td_->inline_message_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
   output.push_back("\"inline_queries_manager_\":{"); td_->inline_queries_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"link_manager_\":{"); td_->link_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"message_import_manager_\":{"); td_->message_import_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
+  output.push_back("\"message_query_manager_\":{"); td_->message_query_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
   output.push_back("\"messages_manager_\":{"); td_->messages_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"notification_manager_\":{"); td_->notification_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"notification_settings_manager_\":{"); td_->notification_settings_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
+  output.push_back("\"online_manager_\":{"); td_->online_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"option_manager_\":{"); td_->option_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
@@ -212,19 +214,31 @@ void MemoryManager::print_managers_memory_stats(vector<string> &output) const {
   output.push_back(",");
   output.push_back("\"privacy_manager_\":{"); td_->privacy_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
+  output.push_back("\"promo_data_manager_\":{"); td_->promo_data_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
   output.push_back("\"quick_reply_manager_\":{"); td_->quick_reply_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"reaction_manager_\":{"); td_->reaction_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
+  output.push_back("\"referral_program_manager_\":{"); td_->referral_program_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
   output.push_back("\"saved_messages_manager_\":{"); td_->saved_messages_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"sponsored_message_manager_\":{"); td_->sponsored_message_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
+  output.push_back("\"star_gift_manager_\":{"); td_->star_gift_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
+  output.push_back("\"star_manager_\":{"); td_->star_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"statistics_manager_\":{"); td_->statistics_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"stickers_manager_\":{"); td_->stickers_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"story_manager_\":{"); td_->story_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
+  output.push_back("\"suggested_action_manager_\":{"); td_->suggested_action_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
+  output.push_back("\"terms_of_service_manager_\":{"); td_->terms_of_service_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"theme_manager_\":{"); td_->theme_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
@@ -238,11 +252,15 @@ void MemoryManager::print_managers_memory_stats(vector<string> &output) const {
   output.push_back(",");
   output.push_back("\"updates_manager_\":{"); td_->updates_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
+  output.push_back("\"user_manager_\":{"); td_->user_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
   output.push_back("\"video_notes_manager_\":{"); td_->video_notes_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"videos_manager_\":{"); td_->videos_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"voice_notes_manager_\":{"); td_->voice_notes_manager_->memory_stats(output); output.push_back("}");
+  output.push_back(",");
+  output.push_back("\"web_app_manager_\":{"); td_->web_app_manager_->memory_stats(output); output.push_back("}");
   output.push_back(",");
   output.push_back("\"web_pages_manager_\":{"); td_->web_pages_manager_->memory_stats(output); output.push_back("}");
 }

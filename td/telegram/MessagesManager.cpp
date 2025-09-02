@@ -860,7 +860,7 @@ class SearchMessagesQuery final : public Td::ResultHandler {
     message_topic_ = message_topic;
     query_ = query;
     sender_dialog_id_ = sender_dialog_id;
-    froa milano hanno bloccato m_message_id_ = from_message_id;
+    from_message_id_ = from_message_id;
     offset_ = offset;
     limit_ = limit;
     filter_ = filter;
@@ -4718,9 +4718,6 @@ vector<td_api::object_ptr<td_api::unreadReaction>> MessagesManager::get_unread_r
       unread_reactions.push_back(std::move(unread_reaction_object));
     }
   }
-      m->has_get_message_views_query = true;
-      m->need_view_counter_increment = increment_view_counter;
-    }
   return unread_reactions;
 }
 
@@ -35930,6 +35927,10 @@ void MessagesManager::memory_stats(vector<string> &output) {
   output.push_back(",");
   output.push_back("\"update_message_ids_\":"); output.push_back(std::to_string(this->update_message_ids_.size()));
   output.push_back(",");
+  output.push_back("\"messages_to_restore_\":"); output.push_back(std::to_string(this->messages_to_restore_.size()));
+  output.push_back(",");
+  output.push_back("\"awaited_message_full_ids_\":"); output.push_back(std::to_string(this->awaited_message_full_ids_.size()));
+  output.push_back(",");
   output.push_back("\"pending_message_group_sends_\":"); output.push_back(std::to_string(this->pending_message_group_sends_.size()));
   output.push_back(",");
   output.push_back("\"pending_paid_media_group_sends_\":"); output.push_back(std::to_string(this->pending_paid_media_group_sends_.size()));
@@ -35947,12 +35948,6 @@ void MessagesManager::memory_stats(vector<string> &output) {
   output.push_back("\"failed_to_load_dialogs_\":"); output.push_back(std::to_string(this->failed_to_load_dialogs_.size()));
   output.push_back(",");
   output.push_back("\"postponed_chat_read_inbox_updates_\":"); output.push_back(std::to_string(this->postponed_chat_read_inbox_updates_.size()));
-  output.push_back(",");
-  output.push_back("\"search_public_dialogs_queries_\":"); output.push_back(std::to_string(this->search_public_dialogs_queries_.size()));
-  output.push_back(",");
-  output.push_back("\"found_public_dialogs_\":"); output.push_back(std::to_string(this->found_public_dialogs_.size()));
-  output.push_back(",");
-  output.push_back("\"found_on_server_dialogs_\":"); output.push_back(std::to_string(this->found_on_server_dialogs_.size()));
   output.push_back(",");
   output.push_back("\"found_dialog_messages_\":"); output.push_back(std::to_string(this->found_dialog_messages_.size()));
   output.push_back(",");
@@ -36024,13 +36019,11 @@ void MessagesManager::memory_stats(vector<string> &output) {
   output.push_back(",");
   output.push_back("\"dialog_viewed_messages_\":"); output.push_back(std::to_string(this->dialog_viewed_messages_.size()));
   output.push_back(",");
-  output.push_back("\"being_reloaded_reactions_\":"); output.push_back(std::to_string(this->being_reloaded_reactions_.size()));
-  output.push_back(",");
-  output.push_back("\"being_reloaded_fact_checks_\":"); output.push_back(std::to_string(this->being_reloaded_fact_checks_.size()));
-  output.push_back(",");
   output.push_back("\"pending_dialog_group_call_updates_\":"); output.push_back(std::to_string(this->pending_dialog_group_call_updates_.size()));
   output.push_back(",");
   output.push_back("\"auth_notification_id_date_\":"); output.push_back(std::to_string(this->auth_notification_id_date_.size()));
+  output.push_back(",");
+  output.push_back("\"edited_messages_\":"); output.push_back(std::to_string(this->edited_messages_.size()));
   output.push_back(",");
   output.push_back("\"previous_repaired_read_inbox_max_message_id_\":"); output.push_back(std::to_string(this->previous_repaired_read_inbox_max_message_id_.size()));
   output.push_back(",");
@@ -36047,12 +36040,6 @@ void MessagesManager::memory_stats(vector<string> &output) {
   output.push_back("\"updated_read_history_message_ids_\":"); output.push_back(std::to_string(this->updated_read_history_message_ids_.size()));
   output.push_back(",");
   output.push_back("\"pending_reactions_\":"); output.push_back(std::to_string(this->pending_reactions_.size()));
-  output.push_back(",");
-  output.push_back("\"paid_reaction_task_ids_\":"); output.push_back(std::to_string(this->paid_reaction_task_ids_.size()));
-  output.push_back(",");
-  output.push_back("\"paid_reaction_tasks_\":"); output.push_back(std::to_string(this->paid_reaction_tasks_.size()));
-  output.push_back(",");
-  output.push_back("\"pending_read_reactions_\":"); output.push_back(std::to_string(this->pending_read_reactions_.size()));
   output.push_back(",");
   output.push_back("\"active_reaction_types_\":"); output.push_back(std::to_string(this->active_reaction_types_.size()));
   output.push_back(",");
