@@ -1,0 +1,9 @@
+[project]
+name = "planfix-telegram-integration"
+version = "1.0.0"
+description = "Planfix CRM ↔ Telegram integration via TDLight"
+requires-python = ">=3.9"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

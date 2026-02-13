@@ -1,0 +1,27 @@
+services:
+  integration:
+    build:
+      context: ../
+      dockerfile: planfix-telegram-integration/Dockerfile
+    ports:
+      - "${SERVER_PORT:-8000}:8000"
+    volumes:
+      - telegram_data:/data/telegram
+      - db_data:/data
+    env_file:
+      - .env
+    environment:
+      - TDJSON_PATH=/usr/local/lib/libtdjson.so
+      - TELEGRAM_DATABASE_DIR=/data/telegram
+      - DATABASE_URL=sqlite:////data/integration.db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  telegram_data:
+  db_data:
