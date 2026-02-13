@@ -61,6 +61,64 @@ class TestTDLightClientInit:
         assert telegram_config.database_dir == "/tmp/test_tdlib"
 
 
+class TestTDLightOptions:
+    """Test TDLight-specific memory optimization options."""
+
+    def test_default_optimization_options(self):
+        config = TelegramConfig(
+            api_id=1, api_hash="h", phone="+1",
+            database_dir="/tmp/t", tdjson_path="/fake",
+        )
+        # Defaults optimized for server-side integration
+        assert config.disable_minithumbnails is True
+        assert config.disable_notifications is True
+        assert config.disable_group_calls is True
+        assert config.disable_auto_download is True
+        assert config.ignore_server_deletes_and_reads is True
+        assert config.ignore_update_chat_read_inbox is True
+        assert config.ignore_update_user_chat_action is True
+        # These default to False
+        assert config.disable_document_filenames is False
+        assert config.ignore_update_chat_last_message is False
+
+    def test_custom_options(self):
+        config = TelegramConfig(
+            api_id=1, api_hash="h", phone="+1",
+            database_dir="/tmp/t", tdjson_path="/fake",
+            disable_minithumbnails=False,
+            disable_notifications=False,
+        )
+        assert config.disable_minithumbnails is False
+        assert config.disable_notifications is False
+
+    def test_options_as_setOption_payload(self):
+        """Verify the TDLight setOption payload format."""
+        config = TelegramConfig(
+            api_id=1, api_hash="h", phone="+1",
+            database_dir="/tmp/t", tdjson_path="/fake",
+        )
+        options = {
+            "disable_minithumbnails": config.disable_minithumbnails,
+            "disable_notifications": config.disable_notifications,
+            "disable_group_calls": config.disable_group_calls,
+        }
+        for name, value in options.items():
+            payload = {
+                "@type": "setOption",
+                "name": name,
+                "value": {"@type": "optionValueBoolean", "value": value},
+            }
+            assert payload["@type"] == "setOption"
+            assert payload["value"]["@type"] == "optionValueBoolean"
+            assert isinstance(payload["value"]["value"], bool)
+
+    def test_get_memory_statistics_payload(self):
+        """Verify getMemoryStatistics request format."""
+        payload = {"@type": "getMemoryStatistics", "full": False}
+        assert payload["@type"] == "getMemoryStatistics"
+        assert payload["full"] is False
+
+
 class TestFakeTDJson:
     """Test the fake TDJson mock to ensure our test harness works."""
 

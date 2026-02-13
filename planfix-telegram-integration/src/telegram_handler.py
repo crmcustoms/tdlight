@@ -13,7 +13,11 @@ logger = logging.getLogger(__name__)
 
 
 class TDLightClient:
-    """Async wrapper around TDLight JSON interface (libtdjson)."""
+    """Async wrapper around TDLight JSON interface (libtdjson).
+
+    Uses TDLight fork (https://github.com/tdlight-team/tdlight) which provides
+    memory optimization options and getMemoryStatistics API beyond standard TDLib.
+    """
 
     def __init__(self, config: TelegramConfig):
         self.config = config
@@ -192,7 +196,7 @@ class TDLightClient:
 
     async def set_tdlib_parameters(self) -> dict:
         os.makedirs(self.config.database_dir, exist_ok=True)
-        return await self.send({
+        result = await self.send({
             "@type": "setTdlibParameters",
             "database_directory": self.config.database_dir,
             "use_message_database": True,
@@ -203,6 +207,39 @@ class TDLightClient:
             "device_model": "Planfix-Telegram Integration",
             "application_version": "1.0",
         })
+
+        # Apply TDLight-specific memory optimizations
+        await self._apply_tdlight_options()
+        return result
+
+    async def _apply_tdlight_options(self) -> None:
+        """Set TDLight-specific options for memory optimization.
+
+        These options are only available in TDLight (https://github.com/tdlight-team/tdlight),
+        not in standard TDLib. They reduce RAM usage for server-side integrations.
+        """
+        tdlight_options = {
+            "disable_minithumbnails": self.config.disable_minithumbnails,
+            "disable_document_filenames": self.config.disable_document_filenames,
+            "disable_notifications": self.config.disable_notifications,
+            "disable_group_calls": self.config.disable_group_calls,
+            "disable_auto_download": self.config.disable_auto_download,
+            "ignore_server_deletes_and_reads": self.config.ignore_server_deletes_and_reads,
+            "ignore_update_chat_last_message": self.config.ignore_update_chat_last_message,
+            "ignore_update_chat_read_inbox": self.config.ignore_update_chat_read_inbox,
+            "ignore_update_user_chat_action": self.config.ignore_update_user_chat_action,
+        }
+
+        for name, value in tdlight_options.items():
+            try:
+                await self.send({
+                    "@type": "setOption",
+                    "name": name,
+                    "value": {"@type": "optionValueBoolean", "value": value},
+                })
+                logger.debug("TDLight option %s = %s", name, value)
+            except Exception:
+                logger.debug("TDLight option %s not supported (standard TDLib?)", name)
 
     async def set_authentication_phone_number(self, phone: str) -> dict:
         return await self.send({
@@ -302,3 +339,14 @@ class TDLightClient:
 
     async def get_authorization_state(self) -> dict:
         return await self.send({"@type": "getAuthorizationState"})
+
+    async def get_memory_statistics(self, full: bool = False) -> dict:
+        """TDLight-specific: get memory usage statistics of all internal managers.
+
+        Available only in TDLight (https://github.com/tdlight-team/tdlight).
+        Returns a JSON string with detailed memory breakdown per manager.
+        """
+        return await self.send({
+            "@type": "getMemoryStatistics",
+            "full": full,
+        })

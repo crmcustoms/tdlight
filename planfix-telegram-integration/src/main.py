@@ -324,6 +324,21 @@ async def submit_auth_password(request: Request):
     return {"success": True, "result": result}
 
 
+@app.get("/debug/memory")
+async def memory_statistics(full: bool = False):
+    """TDLight-specific: return memory usage of all internal TDLight managers.
+
+    Available only when using TDLight (https://github.com/tdlight-team/tdlight).
+    """
+    if not td_client:
+        raise HTTPException(status_code=503, detail="Service not initialized")
+    try:
+        result = await td_client.get_memory_statistics(full=full)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"getMemoryStatistics failed: {e}")
+
+
 @app.post("/webhook/planfix", response_model=PlanfixWebhookResponse)
 async def planfix_webhook(payload: PlanfixWebhookRequest):
     """Receive a message from Planfix and send it to Telegram.
