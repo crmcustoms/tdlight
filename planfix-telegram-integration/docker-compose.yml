@@ -4,7 +4,7 @@ services:
       context: ./planfix-telegram-integration
       dockerfile: Dockerfile
     ports:
-      - "${SERVER_PORT:-8000}:8000"
+      - "${SERVER_PORT:-8001}:8000"
     volumes:
       - telegram_data:/data/telegram
       - db_data:/data
