@@ -8,12 +8,33 @@ services:
     volumes:
       - telegram_data:/data/telegram
       - db_data:/data
-    env_file:
-      - .env
     environment:
+      # Planfix
+      - PLANFIX_ACCOUNT=${PLANFIX_ACCOUNT}
+      - PLANFIX_TOKEN=${PLANFIX_TOKEN}
+      - PLANFIX_WEBHOOK_URL=${PLANFIX_WEBHOOK_URL}
+      - PLANFIX_NOTIFICATION_URL=${PLANFIX_NOTIFICATION_URL}
+      # Telegram
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_API_ID=${TELEGRAM_API_ID}
+      - TELEGRAM_API_HASH=${TELEGRAM_API_HASH}
+      - TELEGRAM_PHONE=${TELEGRAM_PHONE}
+      # TDLight (fixed)
       - TDJSON_PATH=/usr/local/lib/libtdjson.so
       - TELEGRAM_DATABASE_DIR=/data/telegram
       - DATABASE_URL=sqlite:////data/integration.db
+      # TDLight memory optimizations
+      - TDLIGHT_DISABLE_MINITHUMBNAILS=true
+      - TDLIGHT_DISABLE_NOTIFICATIONS=true
+      - TDLIGHT_DISABLE_GROUP_CALLS=true
+      - TDLIGHT_DISABLE_AUTO_DOWNLOAD=true
+      - TDLIGHT_IGNORE_SERVER_DELETES_AND_READS=true
+      - TDLIGHT_IGNORE_UPDATE_CHAT_READ_INBOX=true
+      - TDLIGHT_IGNORE_UPDATE_USER_CHAT_ACTION=true
+      # Server
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8000
+      - LOG_LEVEL=INFO
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
