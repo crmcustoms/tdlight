@@ -1,8 +1,8 @@
 services:
   integration:
     build:
-      context: ../
-      dockerfile: planfix-telegram-integration/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "${SERVER_PORT:-8000}:8000"
     volumes:

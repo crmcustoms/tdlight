@@ -1,4 +1,4 @@
-# Stage 1: Build TDLight (https://github.com/tdlight-team/tdlight)
+# Stage 1: Build TDLight from GitHub
 FROM ubuntu:22.04 AS builder
 
 RUN apt-get update && apt-get install -y \
@@ -10,9 +10,10 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /build/tdlight
-COPY . /build/tdlight/
+WORKDIR /build
+RUN git clone --depth 1 https://github.com/tdlight-team/tdlight.git
 
+WORKDIR /build/tdlight
 RUN mkdir -p build && cd build && \
     cmake -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
@@ -33,10 +34,10 @@ RUN ldconfig
 
 WORKDIR /app
 
-COPY planfix-telegram-integration/requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY planfix-telegram-integration/src/ ./src/
+COPY src/ ./src/
 
 RUN mkdir -p /data/telegram /data
 
