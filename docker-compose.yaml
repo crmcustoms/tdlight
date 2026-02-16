@@ -19,8 +19,7 @@ services:
       - TELEGRAM_API_ID=${TELEGRAM_API_ID}
       - TELEGRAM_API_HASH=${TELEGRAM_API_HASH}
       - TELEGRAM_PHONE=${TELEGRAM_PHONE}
-      # TDLight (fixed)
-      - TDJSON_PATH=/usr/local/lib/libtdjson.so
+      # TDLib paths
       - TELEGRAM_DATABASE_DIR=/data/telegram
       - DATABASE_URL=sqlite:////data/integration.db
       # TDLight memory optimizations

@@ -3,8 +3,6 @@ import json
 import logging
 import os
 import threading
-from ctypes import CDLL, CFUNCTYPE, c_char_p, c_double, c_int
-from ctypes.util import find_library
 from typing import Any, Callable, Optional
 
 from .config import TelegramConfig
@@ -13,10 +11,14 @@ logger = logging.getLogger(__name__)
 
 
 class TDLightClient:
-    """Async wrapper around TDLight JSON interface (libtdjson).
+    """Async wrapper around TDLib/TDLight JSON interface.
 
-    Uses TDLight fork (https://github.com/tdlight-team/tdlight) which provides
-    memory optimization options and getMemoryStatistics API beyond standard TDLib.
+    Supports two backends:
+    - tdjson pip package (pre-built TDLib, no compilation needed) — preferred
+    - ctypes with libtdjson.so (custom TDLight builds via TDJSON_PATH)
+
+    TDLight-specific features (memory optimizations, getMemoryStatistics) work
+    gracefully with standard TDLib — unsupported options are silently skipped.
     """
 
     def __init__(self, config: TelegramConfig):
@@ -32,60 +34,103 @@ class TDLightClient:
         self._receive_thread: threading.Thread | None = None
 
         self._load_library()
-        self._setup_functions()
         self._setup_logging()
         self.client_id = self._td_create_client_id()
 
     def _load_library(self) -> None:
-        tdjson_path = self.config.tdjson_path or find_library("tdjson")
-        if tdjson_path is None:
-            raise RuntimeError(
-                "Cannot find 'tdjson' library. Set TDJSON_PATH or install libtdjson."
-            )
-        self._tdjson = CDLL(tdjson_path)
+        """Load TDLib JSON interface.
 
-    def _setup_functions(self) -> None:
-        self._td_create_client_id = self._tdjson.td_create_client_id
-        self._td_create_client_id.restype = c_int
-        self._td_create_client_id.argtypes = []
+        Priority: TDJSON_PATH (ctypes) → tdjson pip package → system library (ctypes).
+        """
+        # 1. Explicit path — use ctypes (for custom TDLight builds)
+        if self.config.tdjson_path:
+            self._init_ctypes(self.config.tdjson_path)
+            return
 
-        self._td_receive = self._tdjson.td_receive
-        self._td_receive.restype = c_char_p
-        self._td_receive.argtypes = [c_double]
+        # 2. Try tdjson pip package (includes pre-built TDLib binary)
+        try:
+            import tdjson as _tdjson_mod
 
-        self._td_send = self._tdjson.td_send
-        self._td_send.restype = None
-        self._td_send.argtypes = [c_int, c_char_p]
+            self._td_create_client_id = _tdjson_mod.td_create_client_id
+            self._td_send = _tdjson_mod.td_send
+            self._td_receive = _tdjson_mod.td_receive
+            self._td_execute = _tdjson_mod.td_execute
+            self._has_log_callback = hasattr(_tdjson_mod, "td_set_log_message_callback")
+            if self._has_log_callback:
+                self._td_set_log_message_callback = _tdjson_mod.td_set_log_message_callback
+            logger.info("Loaded TDLib via tdjson pip package (pre-built)")
+            return
+        except ImportError:
+            pass
 
-        self._td_execute = self._tdjson.td_execute
-        self._td_execute.restype = c_char_p
-        self._td_execute.argtypes = [c_char_p]
+        # 3. Search system library paths
+        from ctypes.util import find_library
+
+        lib_path = find_library("tdjson")
+        if lib_path:
+            self._init_ctypes(lib_path)
+            return
+
+        raise RuntimeError(
+            "Cannot find TDLib. Install 'tdjson' pip package or set TDJSON_PATH."
+        )
+
+    def _init_ctypes(self, path: str) -> None:
+        """Initialize via ctypes with an explicit .so path."""
+        from ctypes import CDLL, CFUNCTYPE, c_char_p, c_double, c_int
+
+        tdjson = CDLL(path)
+
+        _create = tdjson.td_create_client_id
+        _create.restype = c_int
+        _create.argtypes = []
+        self._td_create_client_id = _create
+
+        _recv = tdjson.td_receive
+        _recv.restype = c_char_p
+        _recv.argtypes = [c_double]
+        self._td_receive = _recv
+
+        _send = tdjson.td_send
+        _send.restype = None
+        _send.argtypes = [c_int, c_char_p]
+        self._td_send = _send
+
+        _exec = tdjson.td_execute
+        _exec.restype = c_char_p
+        _exec.argtypes = [c_char_p]
+        self._td_execute = _exec
 
         self._log_message_callback_type = CFUNCTYPE(None, c_int, c_char_p)
-        self._td_set_log_message_callback = self._tdjson.td_set_log_message_callback
-        self._td_set_log_message_callback.restype = None
-        self._td_set_log_message_callback.argtypes = [
-            c_int,
-            self._log_message_callback_type,
-        ]
+        _set_cb = tdjson.td_set_log_message_callback
+        _set_cb.restype = None
+        _set_cb.argtypes = [c_int, self._log_message_callback_type]
+        self._td_set_log_message_callback = _set_cb
+        self._has_log_callback = True
+
+        logger.info("Loaded TDLib via ctypes from %s", path)
 
     def _setup_logging(self) -> None:
-        @self._log_message_callback_type
-        def on_log_message(verbosity_level, message):
-            msg = message.decode("utf-8") if message else ""
-            if verbosity_level == 0:
-                logger.critical("TDLib fatal: %s", msg)
-            elif verbosity_level == 1:
-                logger.error("TDLib: %s", msg)
+        if self._has_log_callback and hasattr(self, "_log_message_callback_type"):
+            @self._log_message_callback_type
+            def on_log_message(verbosity_level, message):
+                msg = message.decode("utf-8") if message else ""
+                if verbosity_level == 0:
+                    logger.critical("TDLib fatal: %s", msg)
+                elif verbosity_level == 1:
+                    logger.error("TDLib: %s", msg)
 
-        self._log_callback = on_log_message  # prevent GC
-        self._td_set_log_message_callback(2, on_log_message)
+            self._log_callback = on_log_message  # prevent GC
+            self._td_set_log_message_callback(2, on_log_message)
+
         self.execute({"@type": "setLogVerbosityLevel", "new_verbosity_level": 1})
 
     def execute(self, query: dict) -> dict | None:
         result = self._td_execute(json.dumps(query).encode("utf-8"))
         if result:
-            return json.loads(result.decode("utf-8"))
+            if isinstance(result, bytes):
+                return json.loads(result.decode("utf-8"))
+            return json.loads(result)
         return None
 
     def _send_raw(self, query: dict) -> None:
@@ -94,7 +139,9 @@ class TDLightClient:
     def _receive_raw(self, timeout: float = 1.0) -> dict | None:
         result = self._td_receive(timeout)
         if result:
-            return json.loads(result.decode("utf-8"))
+            if isinstance(result, bytes):
+                return json.loads(result.decode("utf-8"))
+            return json.loads(result)
         return None
 
     def _next_request_id(self) -> int:
