@@ -1,7 +1,7 @@
 services:
   integration:
     build:
-      context: .
+      context: ./planfix-telegram-integration
       dockerfile: Dockerfile
     ports:
       - "${SERVER_PORT:-8000}:8000"
