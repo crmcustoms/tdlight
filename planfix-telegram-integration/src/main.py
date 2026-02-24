@@ -324,6 +324,53 @@ async def submit_auth_password(request: Request):
     return {"success": True, "result": result}
 
 
+@app.get("/api/lookup/{phone}")
+async def lookup_phone(phone: str):
+    """Look up a Telegram user by phone number.
+
+    Returns user info and Telegram link if the number is registered.
+    Phone can be with or without '+' prefix (e.g., 380671234567 or +380671234567).
+    """
+    if not td_client:
+        raise HTTPException(status_code=503, detail="Service not initialized")
+    if not td_client.is_authorized:
+        raise HTTPException(status_code=503, detail="Telegram not authorized")
+
+    # Normalize: strip spaces, dashes; ensure no leading '+'
+    clean_phone = phone.strip().replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+    if clean_phone.startswith("+"):
+        clean_phone = clean_phone[1:]
+
+    user = await td_client.search_user_by_phone(clean_phone)
+    if not user:
+        return {
+            "found": False,
+            "phone": clean_phone,
+            "message": "Telegram account not found for this phone number",
+        }
+
+    user_id = user.get("id", 0)
+    username = (user.get("usernames", {}) or {}).get("editable_username", "")
+    if not username:
+        # TDLib v1.7 and earlier use flat "username" field
+        username = user.get("username", "")
+    first_name = user.get("first_name", "")
+    last_name = user.get("last_name", "")
+
+    link = f"https://t.me/{username}" if username else f"tg://user?id={user_id}"
+
+    return {
+        "found": True,
+        "phone": clean_phone,
+        "user_id": user_id,
+        "username": username or None,
+        "first_name": first_name,
+        "last_name": last_name,
+        "name": f"{first_name} {last_name}".strip(),
+        "link": link,
+    }
+
+
 @app.get("/debug/memory")
 async def memory_statistics(full: bool = False):
     """TDLight-specific: return memory usage of all internal TDLight managers.
